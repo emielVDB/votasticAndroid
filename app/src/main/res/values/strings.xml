@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Votastic</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_new_poll">NewPollActivity</string>
+    <string name="title_activity_new_page">NewPageActivity</string>
+    <string name="title_activity_loader">LoaderActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+    <string-array name="genders">
+        <item>Choose gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+</resources>

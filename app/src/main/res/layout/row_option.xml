@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="option"
+            type="com.vandenbussche.emiel.projectsbp.binders.models.OptionBinderModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/btnChose"
+            android:text="@{option.option.content}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{option.hasVote == -1 ? View.VISIBLE : View.GONE}"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/half_margin"
+            android:visibility="@{option.hasVote != -1 ? View.VISIBLE : View.GONE}">
+
+            <LinearLayout
+                android:layout_weight="@{((float)option.option.votes / (float)option.maxVotes) * option.showPercentage}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:padding="@dimen/default_padding"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+                <TextView
+                    android:textColor="@color/transparentWhite"
+                    android:text="@{Integer.toString(option.option.votes)}"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:textColor="@color/transparentWhite"
+                    android:text="@{option.option.content}"
+                    android:layout_width="500dp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <View
+                android:layout_weight="@{(100f - option.showPercentage) + option.showPercentage * (((float)option.maxVotes - (float)option.option.votes )/ (float)option.maxVotes)}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>
