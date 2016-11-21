@@ -42,6 +42,8 @@ public class MyBinders {
 
     @BindingAdapter("tags")
     public static void setTags(LinearLayout layout, List<String> tags) {
+        layout.removeAllViews();
+        if(tags == null) return;
         for (String tag : tags) {
             RowTagBinding binding = DataBindingUtil.inflate(LayoutInflater.from(layout.getContext()), R.layout.row_tag, layout, false);
             binding.setTag(tag);
@@ -110,6 +112,7 @@ public class MyBinders {
 
     @BindingAdapter("newPollOptions")
     public static void setNewPollOptions(final LinearLayout layout, final List<String> options) {
+        layout.removeAllViews();
         if (options == null) return;
         LayoutTransition layoutTransition = layout.getLayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);

@@ -20,6 +20,7 @@ import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by emielPC on 16/11/16.
@@ -69,23 +70,27 @@ public class NewPollActivityViewModel {
         final Poll poll = binding.getPoll().toPoll();
 
         PollsAccess.insert(context, PollsAccess.pollToContentValuesList(poll))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        Account account = AuthHelper.getAccount(context);
-                        while (ContentResolver.isSyncPending(account, Contract.AUTHORITY)  ||
-                                ContentResolver.isSyncActive(account, Contract.AUTHORITY)) {
-                            Log.i("ContentResolver", "SyncPending, canceling");
-                            ContentResolver.cancelSync(account, Contract.AUTHORITY);
-                        }
+                    Account account = AuthHelper.getAccount(context);
+                    while (ContentResolver.isSyncPending(account, Contract.AUTHORITY)  ||
+                            ContentResolver.isSyncActive(account, Contract.AUTHORITY)) {
+                        Log.i("ContentResolver", "SyncPending, canceling");
+                        ContentResolver.cancelSync(account, Contract.AUTHORITY);
+                    }
 
-                        Bundle settingsBundle = new Bundle();
-                        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-                        ContentResolver.requestSync(account,
-                                Contract.AUTHORITY, settingsBundle);
+                    Bundle settingsBundle = new Bundle();
+                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                    context.getContentResolver().requestSync(account,
+                            Contract.AUTHORITY, settingsBundle);
                     }
                 });
+
+
+
     }
 }

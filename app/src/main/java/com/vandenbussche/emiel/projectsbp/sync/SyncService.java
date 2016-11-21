@@ -13,13 +13,12 @@ public class SyncService extends Service {
 
     @Override
     public void onCreate() {
-
-        android.os.Debug.waitForDebugger();
         synchronized (syncAdapterLock) {
             if (syncAdapter == null) {
                 syncAdapter = new SyncAdapter(getApplicationContext(), true);
             }
         }
+
     }
 
     @Nullable

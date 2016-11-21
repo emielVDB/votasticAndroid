@@ -40,6 +40,7 @@ public class PollViewModel {
 
         optionViewModels = new ArrayList<>();
 
+        optionsLinearLayout.removeAllViews();
         for (Option option : poll.getOptions()) {
             OptionViewModel ovm = new OptionViewModel(optionsLinearLayout, this);
             ovm.setOption(option);

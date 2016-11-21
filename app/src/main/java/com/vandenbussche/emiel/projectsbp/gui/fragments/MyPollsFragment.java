@@ -42,6 +42,7 @@ public class MyPollsFragment extends Fragment {
         binding.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
         newsFragmentViewModel = new MyPollsFragmentViewModel(binding, getContext());
         newsFragmentViewModel.loadPolls();
+
         return binding.getRoot();
     }
 

@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <permission android:name="com.vandenbussche.emiel.projectsbp.provider.permission.READ_PROVIDER" />
+    <permission android:name="com.vandenbussche.emiel.votastic.provider.permission.READ_PROVIDER" />
 
 
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -70,12 +70,13 @@
             android:enabled="true"
             android:exported="true"
             android:syncable="true"
-            android:permission="com.vandenbussche.emiel.projectsbp.provider.permission.READ_PROVIDER" />
+            android:permission="com.vandenbussche.emiel.votastic.provider.permission.READ_PROVIDER" />
 
         <service
             android:name=".auth.AuthenticatorService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -87,7 +88,8 @@
 
         <service
             android:name=".sync.SyncService"
-            android:exported="true">
+            android:exported="true"
+            android:process=":sync">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>

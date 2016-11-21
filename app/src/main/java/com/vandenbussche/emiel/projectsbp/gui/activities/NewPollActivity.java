@@ -1,20 +1,30 @@
 package com.vandenbussche.emiel.projectsbp.gui.activities;
 
+import android.accounts.Account;
 import android.animation.LayoutTransition;
+import android.content.AbstractThreadedSyncAdapter;
+import android.content.ContentResolver;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
+import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.databinding.ActivityNewPollBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.ContentNewPollBinding;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 import com.vandenbussche.emiel.projectsbp.viewmodel.NewPollActivityViewModel;
 import com.vandenbussche.emiel.projectsbp.viewmodel.NewsFragmentViewModel;
+
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.AUTHORITY;
 
 public class NewPollActivity extends AppCompatActivity {
     ActivityNewPollBinding binding;
@@ -35,6 +45,25 @@ public class NewPollActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+//        ((Button)findViewById(R.id.btnDone)).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Account account = AuthHelper.getAccount(NewPollActivity.this);
+//                while (ContentResolver.isSyncPending(account, Contract.AUTHORITY)  ||
+//                        ContentResolver.isSyncActive(account, Contract.AUTHORITY)) {
+//                    Log.i("ContentResolver", "SyncPending, canceling");
+//                    ContentResolver.cancelSync(account, Contract.AUTHORITY);
+//                }
+//
+//                Bundle settingsBundle = new Bundle();
+//                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+//                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+//                NewPollActivity.this.getContentResolver().requestSync(account,
+//                        Contract.AUTHORITY, settingsBundle);
+//            }
+//        });
     }
 
     @Override

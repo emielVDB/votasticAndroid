@@ -42,7 +42,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-        android.os.Debug.waitForDebugger();
         this.contentResolver = context.getContentResolver();
         Log.i("SyncAdapter", "elhow da werkt toch");
     }
@@ -55,7 +54,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
-        android.os.Debug.waitForDebugger();
+
         try {
             Log.i("SyncAdapter","syncProductItems");
             Log.i("SyncAdapter","syncProductItems");
@@ -87,6 +86,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     System.out.println("gooooooeeeee  beeeeezziiiiiiiggggg");
                     ApiHelper.getApiService(getContext()).saveNewPoll(new PollRequest(pollLoopItem))
                             .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Action1<PollResponse>() {
                                 @Override
                                 public void call(PollResponse pollResponse) {
