@@ -68,7 +68,6 @@ public class Authenticator extends AbstractAccountAuthenticator {
             return createAuthenticatorActivityBundle(response);
 
         return createAccessTokenBundle(account, accessToken);
-
     }
 
 

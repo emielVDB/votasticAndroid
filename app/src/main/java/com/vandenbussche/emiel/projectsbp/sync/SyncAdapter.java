@@ -57,10 +57,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Log.i("SyncAdapter","syncProductItems");
-            Log.i("SyncAdapter","syncProductItems");
-            Log.i("SyncAdapter","syncProductItems");
-            Log.i("SyncAdapter","syncProductItems");
-            Log.i("SyncAdapter","syncProductItems");
 
             this.syncResult = syncResult;
             syncMyPollsItems(syncResult);
@@ -83,7 +79,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             List<Poll> polls = PollsAccess.cursorToPollList(mData);
             for(final Poll pollLoopItem : polls){
                 try {
-                    System.out.println("gooooooeeeee  beeeeezziiiiiiiggggg");
                     ApiHelper.getApiService(getContext()).saveNewPoll(new PollRequest(pollLoopItem))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -91,27 +86,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                 @Override
                                 public void call(PollResponse pollResponse) {
                                     System.out.println("tis eignelijk gelukt");
+//                                    Uri updateUri = ContentUris.Contract.POLLS_ITEM_URI, pollLoopItem.get_id());
+                                    Uri updateUri = Contract.POLLS_URI;
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB._ID, pollResponse.get_id());
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_FLAG, Poll.Flags.OK);
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_UPLOAD_TIME, pollResponse.getUploadTime());
+
+                                    contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pollLoopItem.get_id()});
+
+                                    syncResult.madeSomeProgress();
                                 }
                             });
-
-//                    ApiHelper.getApiService(getContext()).saveNewPoll(new PollRequest(pollLoopItem))
-//                            .subscribeOn(Schedulers.io())
-//                            .subscribe(new Action1<PollResponse>() {
-//                                @Override
-//                                public void call(PollResponse pollResponse) {
-//
-//                                    //id updaten, en flag op ok zetten
-////                                Uri updateUri = ContentUris.Contract.POLLS_ITEM_URI, pollLoopItem.get_id());
-//                                    Uri updateUri = Contract.POLLS_URI;
-//                                    ContentValues contentValues = new ContentValues();
-//                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB._ID, pollResponse.get_id());
-//                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_FLAG, pollResponse.getFlag());
-//
-//                                    contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pollLoopItem.get_id()});
-//
-//                                    syncResult.madeSomeProgress();
-//                                }
-//                            });
                 }catch (Exception ex){ex.printStackTrace();}
             }
 

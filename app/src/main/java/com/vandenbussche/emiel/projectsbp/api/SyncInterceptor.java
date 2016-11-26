@@ -32,7 +32,7 @@ public class SyncInterceptor implements Interceptor {
             String token = AuthHelper.getCurrentAccessToken(context, accounts[0]);
             if (token != null) {
                 request = original.newBuilder()
-                        .header("authorization", "bearer " + token)
+                        .header("authorization", token)
                         .method(original.method(), original.body())
                         .build();
             }

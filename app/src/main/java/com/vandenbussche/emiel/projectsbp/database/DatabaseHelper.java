@@ -28,8 +28,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, Contract.DATABASE_NAME, null, Contract.DATABASE_VERSION);
     }
 
-
-    //zie ook onderaan voor versie bestemd tijdens de ontwikkeling van app
     @Override
     public void onCreate(SQLiteDatabase db) {
         onUpgrade(db, 0, 1);
@@ -37,42 +35,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        while (oldVersion < newVersion) {
-            switch (oldVersion) {
-                case 0:
-                    upgradeTo1(db);
-                    oldVersion++;
-                    break;
-                case 1:
-                    //upgrade logic from version 1 to 2
-                case 2:
-                    //upgrade logic from version 2 to 3
-                case 3:
-                    //upgrade logic from version 3 to 4
-                    break;
-                default:
-                    throw new IllegalStateException(
-                            "onUpgrade() with unknown oldVersion " + oldVersion);
-            }
-        }
-    }
-
-    private void upgradeTo1(SQLiteDatabase db) {
+        //drop vorige table, create nieuwe
+        db.execSQL(Contract.PollsDB.DELETE_TABLE);
         db.execSQL(Contract.PollsDB.CREATE_TABLE);
+
     }
-
-
-/*    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(Contract.PollsDB.CREATE_TABLE);
-    }
-
-    //For development time schema upgrades where data loss is not an issue
-    //remove your existing tables and call onCreate() to recreate the database.
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        sqLiteDatabase.execSQL(Contract.PollsDB.DELETE_TABLE);
-        onCreate(sqLiteDatabase);
-    }*/
 
 }

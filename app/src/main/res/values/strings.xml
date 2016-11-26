@@ -5,10 +5,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_new_poll">NewPollActivity</string>
-    <string name="title_activity_new_page">NewPageActivity</string>
-    <string name="title_activity_loader">LoaderActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_new_poll">New poll</string>
+    <string name="title_activity_new_page">New page</string>
+    <string name="title_activity_loader">Loading</string>
+    <string name="title_activity_login">Login</string>
 
     <string-array name="genders">
         <item>Choose gender</item>

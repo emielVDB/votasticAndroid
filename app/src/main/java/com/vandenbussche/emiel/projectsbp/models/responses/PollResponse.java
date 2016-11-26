@@ -16,6 +16,7 @@ public class PollResponse {
     private int totalVotes;
     private int totalReactions;
     private int flag;
+    private long uploadTime;
 
     public String get_id() {
         return _id;
@@ -79,5 +80,13 @@ public class PollResponse {
 
     public void setFlag(int flag) {
         this.flag = flag;
+    }
+
+    public long getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(long uploadTime) {
+        this.uploadTime = uploadTime;
     }
 }

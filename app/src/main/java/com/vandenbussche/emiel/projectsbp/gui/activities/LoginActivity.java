@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(mContext);
-            pDialog.setMessage("Contacting GitHub ...");
+            pDialog.setMessage("Contacting Votastic...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();

@@ -1,6 +1,8 @@
 package com.vandenbussche.emiel.projectsbp.viewmodel;
 
 import android.accounts.Account;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.databinding.ObservableArrayList;
@@ -36,7 +38,7 @@ public class NewPollActivityViewModel {
             @Override
             public void onClick(View v) {
                 //add tag
-                if(binding.getPoll().getTags() == null){
+                if (binding.getPoll().getTags() == null) {
                     binding.getPoll().setTags(new ObservableArrayList<String>());
                 }
 
@@ -49,7 +51,7 @@ public class NewPollActivityViewModel {
             @Override
             public void onClick(View v) {
                 //add options
-                if(binding.getPoll().getOptions() == null){
+                if (binding.getPoll().getOptions() == null) {
                     binding.getPoll().setOptions(new ObservableArrayList<String>());
                 }
 
@@ -67,6 +69,12 @@ public class NewPollActivityViewModel {
     }
 
     private void uploadPoll() {
+        final ProgressDialog pDialog = new ProgressDialog(context);
+        pDialog.setMessage("Saving poll...");
+        pDialog.setIndeterminate(false);
+        pDialog.setCancelable(true);
+        pDialog.show();
+
         final Poll poll = binding.getPoll().toPoll();
 
         PollsAccess.insert(context, PollsAccess.pollToContentValuesList(poll))
@@ -75,21 +83,23 @@ public class NewPollActivityViewModel {
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                    Account account = AuthHelper.getAccount(context);
-                    while (ContentResolver.isSyncPending(account, Contract.AUTHORITY)  ||
-                            ContentResolver.isSyncActive(account, Contract.AUTHORITY)) {
-                        Log.i("ContentResolver", "SyncPending, canceling");
-                        ContentResolver.cancelSync(account, Contract.AUTHORITY);
-                    }
+                        Account account = AuthHelper.getAccount(context);
+                        while (ContentResolver.isSyncPending(account, Contract.AUTHORITY) ||
+                                ContentResolver.isSyncActive(account, Contract.AUTHORITY)) {
+                            Log.i("ContentResolver", "SyncPending, canceling");
+                            ContentResolver.cancelSync(account, Contract.AUTHORITY);
+                        }
 
-                    Bundle settingsBundle = new Bundle();
-                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                    settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-                    context.getContentResolver().requestSync(account,
-                            Contract.AUTHORITY, settingsBundle);
+                        Bundle settingsBundle = new Bundle();
+                        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                        context.getContentResolver().requestSync(account,
+                                Contract.AUTHORITY, settingsBundle);
+
+                        pDialog.dismiss();
+                        ((Activity) context).finish();
                     }
                 });
-
 
 
     }

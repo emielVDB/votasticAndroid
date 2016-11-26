@@ -28,7 +28,7 @@ public class TokenAuthenticator  implements Authenticator {
 
             // Add new header to rejected request and retry it
             return response.request().newBuilder()
-                    .header("authorization", "bearer " + newAccessToken)
+                    .header("authorization", newAccessToken)
                     .build();
         }catch (Exception ex){
             return response.request();

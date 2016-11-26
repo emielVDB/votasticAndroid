@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.vandenbussche.emiel.projectsbp.R;
-import com.vandenbussche.emiel.projectsbp.databinding.RowPollBinding;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 import com.vandenbussche.emiel.projectsbp.viewmodel.PollViewModel;
 

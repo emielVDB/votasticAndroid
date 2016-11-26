@@ -1,5 +1,7 @@
 package com.vandenbussche.emiel.projectsbp.gui.activities;
 
+import android.accounts.Account;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -11,11 +13,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
+import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.BlankFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.MyPollsFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.NewsFragment;
@@ -83,6 +88,19 @@ public class HomeActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_home, menu);
 
         return  true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_settings){
+            Account account = AuthHelper.getAccount(this);
+            Bundle settingsBundle = new Bundle();
+            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            this.getContentResolver().requestSync(account,
+                    Contract.AUTHORITY, settingsBundle);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupViewPager(ViewPager viewPager) {
