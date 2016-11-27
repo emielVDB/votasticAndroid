@@ -46,24 +46,6 @@ public class NewPollActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-//        ((Button)findViewById(R.id.btnDone)).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Account account = AuthHelper.getAccount(NewPollActivity.this);
-//                while (ContentResolver.isSyncPending(account, Contract.AUTHORITY)  ||
-//                        ContentResolver.isSyncActive(account, Contract.AUTHORITY)) {
-//                    Log.i("ContentResolver", "SyncPending, canceling");
-//                    ContentResolver.cancelSync(account, Contract.AUTHORITY);
-//                }
-//
-//                Bundle settingsBundle = new Bundle();
-//                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-//                settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-//                NewPollActivity.this.getContentResolver().requestSync(account,
-//                        Contract.AUTHORITY, settingsBundle);
-//            }
-//        });
     }
 
     @Override

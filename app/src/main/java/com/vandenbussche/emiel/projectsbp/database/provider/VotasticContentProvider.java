@@ -27,8 +27,11 @@ public class VotasticContentProvider extends ContentProvider {
 
     private static final int POLLS = 1;
     private static final int POLL_ID = 2;
+    private static final int PAGES = 3;
+    private static final int PAGE_ID = 4;
 
     private static HashMap<String, String> POLLS_PROJECTION_MAP;
+    private static HashMap<String, String> PAGES_PROJECTION_MAP;
 
     private static final UriMatcher uriMatcher;
 
@@ -36,6 +39,8 @@ public class VotasticContentProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(Contract.AUTHORITY, "polls", POLLS);
         uriMatcher.addURI(Contract.AUTHORITY, "polls/#", POLL_ID);
+        uriMatcher.addURI(Contract.AUTHORITY, "pages", PAGES);
+        uriMatcher.addURI(Contract.AUTHORITY, "pages/#", PAGE_ID);
     }
 
     @Override
@@ -51,6 +56,12 @@ public class VotasticContentProvider extends ContentProvider {
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_REACTIONS, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_REACTIONS);
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG);
 
+        PAGES_PROJECTION_MAP = new HashMap<>();
+        PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID);
+        PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_TITLE, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_TITLE);
+        PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_TAGS, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_TAGS);
+        PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_POLLS_COUNT, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_POLLS_COUNT);
+        PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_FLAG);
 
         return true;
     }
@@ -64,6 +75,10 @@ public class VotasticContentProvider extends ContentProvider {
                 queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.TABLE_NAME);
                 queryBuilder.setProjectionMap(POLLS_PROJECTION_MAP);
                 break;
+            case PAGES:
+                queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME);
+                queryBuilder.setProjectionMap(PAGES_PROJECTION_MAP);
+                break;
 
             case POLL_ID:
                 queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.TABLE_NAME);
@@ -72,6 +87,16 @@ public class VotasticContentProvider extends ContentProvider {
                 String pollid = uri.getPathSegments().get(Contract.POLL_ID_PATH_POSITION);
                 DatabaseUtils.concatenateWhere(selection, "( " + com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns._ID + " = ?" + ")"); //strict genomen haakjes niet nodig
                 selectionArgs = DatabaseUtils.appendSelectionArgs(selectionArgs, new String[]{"" + pollid});
+
+                break;
+
+            case PAGE_ID:
+                queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME);
+                queryBuilder.setProjectionMap(PAGES_PROJECTION_MAP);
+
+                String pageid = uri.getPathSegments().get(Contract.PAGE_ID_PATH_POSITION);
+                DatabaseUtils.concatenateWhere(selection, "( " + com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID + " = ?" + ")"); //strict genomen haakjes niet nodig
+                selectionArgs = DatabaseUtils.appendSelectionArgs(selectionArgs, new String[]{"" + pageid});
 
                 break;
 
@@ -105,6 +130,10 @@ public class VotasticContentProvider extends ContentProvider {
                 return Contract.POLLS_CONTENT_TYPE;
             case POLL_ID:
                 return Contract.POLLS_ITEM_CONTENT_TYPE;
+            case PAGES:
+                return Contract.PAGES_CONTENT_TYPE;
+            case PAGE_ID:
+                return Contract.PAGES_ITEM_CONTENT_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -125,6 +154,15 @@ public class VotasticContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(pollsItemUri, null);
                 return pollsItemUri;
 
+            case PAGES:
+                newRowId = db.insert(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                Uri pagesItemUri = ContentUris.withAppendedId(Contract.PAGES_ITEM_URI, newRowId);
+                getContext().getContentResolver().notifyChange(pagesItemUri, null);
+                return pagesItemUri;
+
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -144,6 +182,13 @@ public class VotasticContentProvider extends ContentProvider {
                         selectionArgs
                 );
                 break;
+            case PAGES:
+                count = db.delete(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
             case POLL_ID:
                 String pollItemId = uri.getPathSegments().get(1);
                 finalWhere = "_id = " + pollItemId;
@@ -154,6 +199,21 @@ public class VotasticContentProvider extends ContentProvider {
 
                 count = db.delete(
                         com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.TABLE_NAME,
+                        finalWhere,
+                        selectionArgs
+                );
+                break;
+
+            case PAGE_ID:
+                String pageItemId = uri.getPathSegments().get(1);
+                finalWhere = "_id = " + pageItemId;
+
+                if (selection != null) {
+                    finalWhere = DatabaseUtils.concatenateWhere(finalWhere, selection);
+                }
+
+                count = db.delete(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME,
                         finalWhere,
                         selectionArgs
                 );
@@ -183,9 +243,18 @@ public class VotasticContentProvider extends ContentProvider {
                 );
                 break;
 
+            case PAGES:
+                count = db.update(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
+                break;
+
             case POLL_ID:
-                String productId = uri.getPathSegments().get(1);
-                finalWhere = "_id = " + productId;
+                String pollId = uri.getPathSegments().get(1);
+                finalWhere = "_id = " + pollId;
 
                 if (selection != null) {
                     finalWhere = DatabaseUtils.concatenateWhere(finalWhere, selection);
@@ -198,6 +267,23 @@ public class VotasticContentProvider extends ContentProvider {
                         selectionArgs
                 );
                 break;
+
+            case PAGE_ID:
+                String pageId = uri.getPathSegments().get(1);
+                finalWhere = "_id = " + pageId;
+
+                if (selection != null) {
+                    finalWhere = DatabaseUtils.concatenateWhere(finalWhere, selection);
+                }
+
+                count = db.update(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME,
+                        values,
+                        finalWhere,
+                        selectionArgs
+                );
+                break;
+            
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }

@@ -14,7 +14,7 @@ public class Contract {
     included automatically with a provider; the provider's developer has to define them and then make them available to other developers.
     */
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "database.db";
 
     public interface PollsColumns extends BaseColumns {
@@ -27,6 +27,14 @@ public class Contract {
         public static final String COLUMN_TOTAL_REACTIONS= "total_reactions";
         public static final String COLUMN_FLAG= "flag";
         public static final String COLUMN_UPLOAD_TIME= "upload_time";
+        public static final String COLUMN_PAGE_ID= "page_id";
+    }
+    public interface PagesColumns extends BaseColumns {
+        public static final String TABLE_NAME = "pages";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_TAGS = "tags";
+        public static final String COLUMN_POLLS_COUNT= "polls_count";
+        public static final String COLUMN_FLAG= "flag";
     }
 
     public static abstract class PollsDB implements PollsColumns {
@@ -41,7 +49,22 @@ public class Contract {
                 + COLUMN_TOTAL_VOTES + " integer not null, "
                 + COLUMN_TOTAL_REACTIONS + " integer not null, "
                 + COLUMN_FLAG + " integer not null, "
-                + COLUMN_UPLOAD_TIME + " integer "
+                + COLUMN_UPLOAD_TIME + " integer, "
+                + COLUMN_PAGE_ID + " text "
+                + ");";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+    public static abstract class PagesDB implements PagesColumns {
+
+        public static final String CREATE_TABLE = "create table "
+                + TABLE_NAME + "( "
+                + _ID + " string primary key, "
+                + COLUMN_TITLE + " text not null, "
+                + COLUMN_TAGS + " text not null, "
+                + COLUMN_POLLS_COUNT + " integer not null, "
+                + COLUMN_FLAG + " integer not null, "
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

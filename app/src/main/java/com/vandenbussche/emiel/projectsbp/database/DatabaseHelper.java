@@ -37,7 +37,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //drop vorige table, create nieuwe
         db.execSQL(Contract.PollsDB.DELETE_TABLE);
+        db.execSQL(Contract.PagesDB.DELETE_TABLE);
+
         db.execSQL(Contract.PollsDB.CREATE_TABLE);
+        db.execSQL(Contract.PagesDB.CREATE_TABLE);
 
     }
 

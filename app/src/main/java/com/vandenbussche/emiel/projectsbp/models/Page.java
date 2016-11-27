@@ -11,6 +11,7 @@ public class Page {
     String title;
     List<String> tags;
     int pollsCount;
+    int flag;
 
     public String get_id() {
         return _id;
@@ -42,5 +43,19 @@ public class Page {
 
     public void setPollsCount(int pollsCount) {
         this.pollsCount = pollsCount;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
+    public static class Flags {
+        public static final int NEW = 0;
+        public static final int OK = 1;
+        public static final int NEEDS_UPDATE = 2;
     }
 }
