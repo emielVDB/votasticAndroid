@@ -15,4 +15,5 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+    <string name="title_activity_random_polls"> </string>
 </resources>

@@ -14,7 +14,7 @@ public class Contract {
     included automatically with a provider; the provider's developer has to define them and then make them available to other developers.
     */
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "database.db";
 
     public interface PollsColumns extends BaseColumns {
@@ -64,7 +64,7 @@ public class Contract {
                 + COLUMN_TITLE + " text not null, "
                 + COLUMN_TAGS + " text not null, "
                 + COLUMN_POLLS_COUNT + " integer not null, "
-                + COLUMN_FLAG + " integer not null, "
+                + COLUMN_FLAG + " integer not null "
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

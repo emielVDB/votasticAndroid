@@ -6,7 +6,6 @@
 
     <permission android:name="com.vandenbussche.emiel.votastic.provider.permission.READ_PROVIDER" />
 
-
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
@@ -21,12 +20,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".gui.activities.HomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.activities.NewPollActivity"
             android:label="@string/title_activity_new_poll"
@@ -62,21 +60,20 @@
         <activity
             android:name=".gui.activities.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name=".database.provider.VotasticContentProvider"
             android:authorities="com.vandenbussche.emiel.Votastic"
             android:enabled="true"
             android:exported="true"
-            android:syncable="true"
-            android:permission="com.vandenbussche.emiel.votastic.provider.permission.READ_PROVIDER" />
+            android:permission="com.vandenbussche.emiel.votastic.provider.permission.READ_PROVIDER"
+            android:syncable="true" />
 
         <service
             android:name=".auth.AuthenticatorService"
             android:enabled="true"
-            android:exported="true"
-            >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -85,21 +82,23 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator" />
         </service>
-
         <service
             android:name=".sync.SyncService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
+                <action android:name="android.content.SyncAdapter" />
             </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter"
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
 
-
+        <activity
+            android:name=".gui.activities.RandomPollsActivity"
+            android:label="@string/title_activity_random_polls"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
-
 
 </manifest>
