@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +22,7 @@ import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.BlankFragment;
-import com.vandenbussche.emiel.projectsbp.gui.fragments.MyPollsFragment;
+import com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileMyPollsFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.NewsFragment;
 
 import java.util.ArrayList;
@@ -109,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mAdapter.addFragment(new NewsFragment(), "News");
-        mAdapter.addFragment(new MyPollsFragment(), "My Polls");
+        mAdapter.addFragment(new ProfileMyPollsFragment(), "Profile");
         mAdapter.addFragment(BlankFragment.newInstance("partners", "tof"), "Notifications");
         viewPager.setAdapter(mAdapter);
         viewPager.addOnPageChangeListener(new ViewPagerListener());

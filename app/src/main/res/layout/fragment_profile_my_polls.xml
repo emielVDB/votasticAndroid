@@ -7,19 +7,24 @@ xmlns:tools="http://schemas.android.com/tools">
     <variable
         name="pollList"
         type="com.vandenbussche.emiel.projectsbp.models.PollList" />
+
+    <variable
+        name="adapterListener"
+        type="com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader.PollsAdapterWithHeaderListener"/>
 </data>
 
 
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".gui.fragments.MyPollsFragment">
+    tools:context=".gui.fragments.ProfileMyPollsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pollsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:items="@{pollList.data}"
+        app:items_in_profile="@{pollList.data}"
+        app:listener="@{adapterListener}"
         />
 
 </FrameLayout>

@@ -6,4 +6,5 @@
     <color name="colorAccent">#cc3f48</color>
 
     <color name="transparentWhite">#aaFFFFFF</color>
+    <color name="lightGray">#22000000</color>
 </resources>

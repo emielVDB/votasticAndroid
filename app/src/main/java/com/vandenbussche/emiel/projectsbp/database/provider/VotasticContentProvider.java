@@ -55,6 +55,8 @@ public class VotasticContentProvider extends ContentProvider {
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_VOTES, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_VOTES);
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_REACTIONS, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_REACTIONS);
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG);
+        POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_ID, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_ID);
+        POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_TITLE, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_TITLE);
 
         PAGES_PROJECTION_MAP = new HashMap<>();
         PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID);

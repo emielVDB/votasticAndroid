@@ -244,7 +244,7 @@ public class PagesAccess {
         return pages;
     }
 
-    public static ContentValues pollToContentValuesList(Page page) {
+    public static ContentValues pageToContentValuesList(Page page) {
         String[] columns = new String[]{
                 Contract.PagesColumns._ID,
                 Contract.PagesColumns.COLUMN_TITLE,

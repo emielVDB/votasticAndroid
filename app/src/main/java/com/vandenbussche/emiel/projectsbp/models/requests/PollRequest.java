@@ -16,9 +16,10 @@ import java.util.List;
  * Created by emielPC on 18/11/16.
  */
 public class PollRequest extends BaseObservable {
-    String question;
-    List<String> tags;
-    List<String> options;
+    private String question;
+    private List<String> tags;
+    private List<String> options;
+    private String pageId;
 
     public PollRequest(){}
 
@@ -29,6 +30,7 @@ public class PollRequest extends BaseObservable {
         for (Option option : basePoll.getOptions()) {
             this.options.add(option.getContent());
         }
+        this.pageId = basePoll.getPageId();
     }
 
     public Poll toPoll(){
@@ -45,6 +47,8 @@ public class PollRequest extends BaseObservable {
         for(String option : this.options){
             poll.getOptions().add(new Option(option));
         }
+        poll.setPageId(this.pageId);
+        //page name gets set manually!!!
         return poll;
     }
 
@@ -76,5 +80,13 @@ public class PollRequest extends BaseObservable {
     public void setQuestion(String question) {
         this.question = question;
         notifyPropertyChanged(BR.question);
+    }
+
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
     }
 }

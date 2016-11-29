@@ -5,19 +5,25 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
+import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
+import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.databinding.ActivityNewPollBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.ContentNewPollBinding;
+import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -63,19 +69,79 @@ public class NewPollActivityViewModel {
         binding.content.btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadPoll();
+                doneButtonClicked();
             }
         });
     }
 
-    private void uploadPoll() {
+    private void doneButtonClicked(){
+        PagesAccess.getAll(context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Page>>() {
+                    @Override
+                    public void call(final List<Page> pages) {
+                        if(pages.size() == 0){ uploadPoll(); return;}
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                        builder.setMessage(R.string.addToPoll)
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //ask wich one
+                                        showChoosePageDialog(pages);
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        uploadPoll();
+                                    }
+                                });
+                        // Create the AlertDialog object and return it
+                        builder.create().show();
+                    }
+                });
+    }
+
+    private void showChoosePageDialog(final List<Page> pages) {
+        String[] strPages = new String[pages.size()];
+        int loopnr = 0;
+        for (Page page : pages) {
+            strPages[loopnr] = page.getTitle();
+            loopnr++;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.choosePage)
+        .setItems(strPages, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                binding.getPoll().setPageId(pages.get(which).get_id());
+
+                final Poll poll = binding.getPoll().toPoll();
+                poll.setPageTitle(pages.get(which).getTitle());
+                uploadPoll(poll);
+            }
+        })
+        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                uploadPoll();
+            }
+        });
+        // Create the AlertDialog object and return it
+        builder.create().show();
+    }
+
+    private void uploadPoll(){
+        final Poll poll = binding.getPoll().toPoll();
+        uploadPoll(poll);
+    }
+    private void uploadPoll(Poll poll) {
         final ProgressDialog pDialog = new ProgressDialog(context);
         pDialog.setMessage("Saving poll...");
         pDialog.setIndeterminate(false);
         pDialog.setCancelable(true);
         pDialog.show();
-
-        final Poll poll = binding.getPoll().toPoll();
 
         PollsAccess.insert(context, PollsAccess.pollToContentValuesList(poll))
                 .subscribeOn(Schedulers.io())
@@ -100,7 +166,5 @@ public class NewPollActivityViewModel {
                         ((Activity) context).finish();
                     }
                 });
-
-
     }
 }

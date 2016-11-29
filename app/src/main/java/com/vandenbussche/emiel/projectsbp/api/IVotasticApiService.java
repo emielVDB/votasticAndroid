@@ -2,7 +2,9 @@ package com.vandenbussche.emiel.projectsbp.api;
 
 
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.requests.PageRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
+import com.vandenbussche.emiel.projectsbp.models.responses.PageResponse;
 import com.vandenbussche.emiel.projectsbp.models.responses.PollResponse;
 
 import java.util.List;
@@ -24,5 +26,6 @@ public interface IVotasticApiService {
     @POST("/api/my/polls")
     Observable<PollResponse> saveNewPoll(@Body PollRequest pollrequest);
 
-
+    @POST("/api/my/pages")
+    Observable<PageResponse> saveNewPage(@Body PageRequest pagerequest);
 }

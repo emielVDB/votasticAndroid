@@ -14,7 +14,6 @@ import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.databinding.ActivityNewPageBinding;
-import com.vandenbussche.emiel.projectsbp.databinding.ActivityNewPageBinding;
 import com.vandenbussche.emiel.projectsbp.models.Page;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,9 +58,9 @@ public class NewPageActivityViewModel {
         pDialog.setCancelable(true);
         pDialog.show();
 
-        final Page poll = binding.getPage().toPage();
+        final Page page = binding.getPage().toPage();
 
-        PagesAccess.insert(context, PagesAccess.pollToContentValuesList(poll))
+        PagesAccess.insert(context, PagesAccess.pageToContentValuesList(page))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {

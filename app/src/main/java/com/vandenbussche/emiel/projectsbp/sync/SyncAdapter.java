@@ -16,10 +16,14 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
+import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
+import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.requests.PageRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
+import com.vandenbussche.emiel.projectsbp.models.responses.PageResponse;
 import com.vandenbussche.emiel.projectsbp.models.responses.PollResponse;
 
 import java.io.Console;
@@ -60,6 +64,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             this.syncResult = syncResult;
             syncMyPollsItems(syncResult);
+            syncMyPagesItems(syncResult);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -69,7 +74,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     //http://stackoverflow.com/questions/33821923/how-to-observeon-the-calling-thread-in-java-rx
     private void syncMyPollsItems(final SyncResult syncResult) {
         try {
-            //todo: tzelfde voor de pages doen als hieronder
             // alle polls met newFlag uploaden
             Cursor mData = contentResolver.query(com.vandenbussche.emiel.projectsbp.database.provider.Contract.POLLS_URI, PollsAccess.allColumns, "flag = ?", new String[]{"0"}, null);
 
@@ -102,6 +106,48 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             // alle polls met updateFlag downloaden
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            syncResult.stats.numIoExceptions++;
+            throw ex;
+        }
+    }
+
+    private void syncMyPagesItems(final SyncResult syncResult) {
+        try {
+            // alle pages met newFlag uploaden
+            Cursor mData = contentResolver.query(com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGES_URI, PagesAccess.allColumns, "flag = ?", new String[]{"0"}, null);
+
+            //door te tellen hoeveel records er zijn, zijn we zeker dat de data binnen gehaald is
+            mData.getCount();
+
+            List<Page> pages = PagesAccess.cursorToPageList(mData);
+            for(final Page pageLoopItem : pages){
+                try {
+                    ApiHelper.getApiService(getContext()).saveNewPage(new PageRequest(pageLoopItem))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Action1<PageResponse>() {
+                                @Override
+                                public void call(PageResponse pageResponse) {
+                                    System.out.println("tis eignelijk gelukt");
+//                                    Uri updateUri = ContentUris.Contract.PAGES_ITEM_URI, pageLoopItem.get_id());
+                                    Uri updateUri = Contract.PAGES_URI;
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB._ID, pageResponse.get_id());
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.COLUMN_FLAG, Page.Flags.OK);
+
+                                    contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pageLoopItem.get_id()});
+
+                                    syncResult.madeSomeProgress();
+                                }
+                            });
+                }catch (Exception ex){ex.printStackTrace();}
+            }
+
+            // alle pages met updateFlag downloaden
 
 
         } catch (Exception ex) {

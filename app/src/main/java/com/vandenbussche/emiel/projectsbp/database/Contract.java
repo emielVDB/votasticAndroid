@@ -14,7 +14,7 @@ public class Contract {
     included automatically with a provider; the provider's developer has to define them and then make them available to other developers.
     */
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "database.db";
 
     public interface PollsColumns extends BaseColumns {
@@ -28,6 +28,7 @@ public class Contract {
         public static final String COLUMN_FLAG= "flag";
         public static final String COLUMN_UPLOAD_TIME= "upload_time";
         public static final String COLUMN_PAGE_ID= "page_id";
+        public static final String COLUMN_PAGE_TITLE= "page_title";
     }
     public interface PagesColumns extends BaseColumns {
         public static final String TABLE_NAME = "pages";
@@ -50,7 +51,8 @@ public class Contract {
                 + COLUMN_TOTAL_REACTIONS + " integer not null, "
                 + COLUMN_FLAG + " integer not null, "
                 + COLUMN_UPLOAD_TIME + " integer, "
-                + COLUMN_PAGE_ID + " text "
+                + COLUMN_PAGE_ID + " text, "
+                + COLUMN_PAGE_TITLE + " text "
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

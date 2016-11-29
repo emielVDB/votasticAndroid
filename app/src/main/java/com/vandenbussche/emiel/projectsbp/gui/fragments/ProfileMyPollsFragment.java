@@ -11,24 +11,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.vandenbussche.emiel.projectsbp.R;
-import com.vandenbussche.emiel.projectsbp.databinding.FragmentMyPollsBinding;
-import com.vandenbussche.emiel.projectsbp.databinding.FragmentNewsBinding;
-import com.vandenbussche.emiel.projectsbp.viewmodel.MyPollsFragmentViewModel;
-import com.vandenbussche.emiel.projectsbp.viewmodel.NewsFragmentViewModel;
+import com.vandenbussche.emiel.projectsbp.databinding.FragmentProfileMyPollsBinding;
+import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPollsFragmentViewModel;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyPollsFragment.OnFragmentInteractionListener} interface
+ * {@link ProfileMyPollsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class MyPollsFragment extends Fragment {
-    FragmentMyPollsBinding binding;
-    MyPollsFragmentViewModel newsFragmentViewModel;
+public class ProfileMyPollsFragment extends Fragment {
+    FragmentProfileMyPollsBinding binding;
+    ProfileMyPollsFragmentViewModel newsFragmentViewModel;
     private OnFragmentInteractionListener mListener;
 
-    public MyPollsFragment() {
+    public ProfileMyPollsFragment() {
         // Required empty public constructor
     }
 
@@ -37,16 +35,15 @@ public class MyPollsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_my_polls, container, false);
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile_my_polls, container, false);
         binding.pollsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         binding.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
-        newsFragmentViewModel = new MyPollsFragmentViewModel(binding, getContext());
+        newsFragmentViewModel = new ProfileMyPollsFragmentViewModel(binding, getContext());
         newsFragmentViewModel.loadPolls();
 
         return binding.getRoot();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -81,7 +78,6 @@ public class MyPollsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

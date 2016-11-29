@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptar;
+import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader;
 import com.vandenbussche.emiel.projectsbp.databinding.RowNewPollTagBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.RowTagBinding;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
@@ -26,6 +27,15 @@ public class MyBinders {
     public static void setItems(RecyclerView recyclerView, List<Poll> seriesList) {
         if (seriesList != null) {
             PollsAdaptar adapter = new PollsAdaptar(seriesList, recyclerView.getContext());
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @BindingAdapter({"items_in_profile", "listener"})
+    public static void setItemsInProfile(RecyclerView recyclerView, List<Poll> seriesList, PollsAdaptarWithHeader.PollsAdapterWithHeaderListener listener) {
+        if (seriesList != null) {
+            PollsAdaptarWithHeader adapter = new PollsAdaptarWithHeader(seriesList, recyclerView.getContext(), listener, R.layout.header_profile);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }

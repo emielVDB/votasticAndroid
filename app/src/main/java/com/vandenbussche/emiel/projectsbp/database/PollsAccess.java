@@ -38,6 +38,8 @@ public class PollsAccess {
             Contract.PollsColumns.COLUMN_TOTAL_VOTES,
             Contract.PollsColumns.COLUMN_TOTAL_REACTIONS,
             Contract.PollsColumns.COLUMN_FLAG,
+            Contract.PollsColumns.COLUMN_PAGE_ID,
+            Contract.PollsColumns.COLUMN_PAGE_TITLE,
     };
 
 
@@ -231,6 +233,8 @@ public class PollsAccess {
         poll.setTotalReactions(cursor.getInt(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_TOTAL_REACTIONS)));
         poll.setTotalVotes(cursor.getInt(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_TOTAL_VOTES)));
         poll.setChoiceIndex(cursor.getInt(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_CHOICE_INDEX)));
+        poll.setPageId(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_PAGE_ID)));
+        poll.setPageTitle(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_PAGE_TITLE)));
 
         List<String> tags = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_TAGS)),
                 new TypeToken<ArrayList<String>>() {}.getType());//list<String> type
@@ -256,35 +260,39 @@ public class PollsAccess {
 
     public static ContentValues pollToContentValuesList(Poll poll) {
         String[] columns = new String[]{
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns._ID,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_QUESTION,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TAGS,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_OPTIONS,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_CHOICE_INDEX,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_VOTES,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_TOTAL_REACTIONS,
-                com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG,
+                Contract.PollsColumns._ID,
+                Contract.PollsColumns.COLUMN_QUESTION,
+                Contract.PollsColumns.COLUMN_TAGS,
+                Contract.PollsColumns.COLUMN_OPTIONS,
+                Contract.PollsColumns.COLUMN_CHOICE_INDEX,
+                Contract.PollsColumns.COLUMN_TOTAL_VOTES,
+                Contract.PollsColumns.COLUMN_TOTAL_REACTIONS,
+                Contract.PollsColumns.COLUMN_FLAG,
+                Contract.PollsColumns.COLUMN_PAGE_ID,
+                Contract.PollsColumns.COLUMN_PAGE_TITLE,
         };
 
 
         Object[] columnValues = new Object[]{poll.get_id(), poll.getQuestion(),new Gson().toJson(poll.getTags()),
                 new Gson().toJson(poll.getOptions()), poll.getChoiceIndex(), poll.getTotalVotes(), poll.getTotalReactions(),
-                poll.getFlag()};
+                poll.getFlag(), poll.getPageId(), poll.getPageTitle()};
 
         ContentValues contentValues = new ContentValues();
         int counter = 0;
         for (String column : columns) {
-            Type type = columnValues[counter].getClass();
+            try {
+                Type type = columnValues[counter].getClass();
 
-            if (type == String.class) {
-                contentValues.put(column, (String) columnValues[counter]);
-            } else if (type == Integer.class) {
-                contentValues.put(column, (Integer) columnValues[counter]);
-            } else if (type == Boolean.class) {
-                contentValues.put(column, (Boolean) columnValues[counter]);
-            } else if (type == Double.class) {
-                contentValues.put(column, (Double) columnValues[counter]);
-            }
+                if (type == String.class) {
+                    contentValues.put(column, (String) columnValues[counter]);
+                } else if (type == Integer.class) {
+                    contentValues.put(column, (Integer) columnValues[counter]);
+                } else if (type == Boolean.class) {
+                    contentValues.put(column, (Boolean) columnValues[counter]);
+                } else if (type == Double.class) {
+                    contentValues.put(column, (Double) columnValues[counter]);
+                }
+            }catch (Exception ex){}
 
             counter++;
         }

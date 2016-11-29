@@ -15,20 +15,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".gui.fragments.NewsFragment">
-        <TextView
-            android:text="You are not following any pages yet"
-            android:gravity="center"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:visibility="@{(pollList.data != null &amp;&amp; pollList.data.size() != 0)? View.VISIBLE : View.GONE}"/>
+            android:layout_height="match_parent"
+            android:visibility="@{(pollList.data == null || pollList.data.size() == 0)? View.VISIBLE : View.GONE}"
+            android:orientation="vertical">
+            <TextView
+                android:text="You are not following any pages yet"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:textSize="@dimen/title_size"
+            />
+            <TextView
+                android:text="Click the search icon to find new posts"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                />
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/pollsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:items="@{pollList.data}"
-            android:visibility="@{(pollList.data != null &amp;&amp; pollList.data.size() != 0)? View.GONE : View.VISIBLE}"
+            android:visibility="@{(pollList.data == null || pollList.data.size() == 0)? View.GONE : View.VISIBLE}"
             />
 
     </FrameLayout>

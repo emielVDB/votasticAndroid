@@ -18,6 +18,8 @@ public class Poll extends BaseObservable{
     private int totalReactions;
     private int flag;
     private long uploadTime;
+    private String pageId;
+    private String pageTitle;
 
     public String get_id() {
         return _id;
@@ -97,6 +99,22 @@ public class Poll extends BaseObservable{
 
     public void setUploadTime(long uploadTime) {
         this.uploadTime = uploadTime;
+    }
+
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 
     public static class Flags {

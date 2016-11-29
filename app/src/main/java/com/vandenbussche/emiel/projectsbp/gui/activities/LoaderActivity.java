@@ -27,7 +27,7 @@ public class LoaderActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(AuthHelper.isUserLoggedIn(this)) {
-            //todo: start syncing
+            //todo: start and wait to finish of syncing
 
             ContentResolver.setSyncAutomatically(AuthHelper.getAccount(this), AUTHORITY, true);
             Intent intent = new Intent(this, HomeActivity.class);
