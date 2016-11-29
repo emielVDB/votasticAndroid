@@ -23,7 +23,7 @@ xmlns:tools="http://schemas.android.com/tools">
         android:id="@+id/pollsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:items_in_profile="@{pollList.data}"
+        app:my_poll_items="@{pollList.data}"
         app:listener="@{adapterListener}"
         />
 

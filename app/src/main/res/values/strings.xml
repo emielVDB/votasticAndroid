@@ -20,4 +20,5 @@
     <string name="addToPoll">Do you want to add this poll to one of your pages?</string>
     <string name="no">No</string>
     <string name="choosePage">Choose a page</string>
+    <string name="title_activity_page_detail">PageDetailActivity</string>
 </resources>

@@ -49,6 +49,12 @@ public class ProfileMyPollsFragmentViewModel extends BaseObservable implements P
     }
 
     public void loadPolls() {
+        //show empty list first
+        PollList pollList = new PollList();
+        pollList.setData(new ArrayList<Poll>());
+        binding.setPollList(pollList);
+        notifyPropertyChanged(BR.pollList);
+
         PollsAccess.getAll(context)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Poll>>() {

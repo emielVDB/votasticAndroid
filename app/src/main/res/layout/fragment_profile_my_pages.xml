@@ -1,13 +1,33 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileMyPagesFragment">
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="pageList"
+            type="com.vandenbussche.emiel.projectsbp.models.PageList" />
+
+        <variable
+            name="adapterListener"
+            type="com.vandenbussche.emiel.projectsbp.adapters.PagesAdaptarWithHeader.PagesAdapterWithHeaderListener" />
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context="com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileMyPagesFragment">
 
-</FrameLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:my_page_items="@{pageList}"
+            app:listener="@{adapterListener}"
+            />
+    </FrameLayout>
+</layout>
+
+

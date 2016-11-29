@@ -29,7 +29,6 @@ public class PollViewModel {
 
     public PollViewModel(ViewGroup parent){
         binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_poll, parent, false);
-
         optionsLinearLayout = (LinearLayout)binding.getRoot().findViewById(R.id.optionsLinearLayout);
     }
 

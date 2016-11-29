@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="pollList"
+            type="com.vandenbussche.emiel.projectsbp.models.PollList" />
+
+        <variable
+            name="adapterListener"
+            type="com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader.PollsAdapterWithHeaderListener" />
+    </data>
+    <RelativeLayout
+        android:id="@+id/content_page_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.vandenbussche.emiel.projectsbp.gui.activities.PageDetailActivity"
+        tools:showIn="@layout/activity_page_detail">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pollsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:page_poll_items="@{pollList.data}"
+            app:listener="@{adapterListener}" />
+    </RelativeLayout>
+</layout>

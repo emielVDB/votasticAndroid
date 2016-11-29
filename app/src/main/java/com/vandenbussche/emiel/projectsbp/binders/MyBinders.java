@@ -11,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.adapters.PagesAdaptarWithHeader;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptar;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader;
 import com.vandenbussche.emiel.projectsbp.databinding.RowNewPollTagBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.RowTagBinding;
+import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 
 import java.util.List;
@@ -32,10 +34,28 @@ public class MyBinders {
         }
     }
 
-    @BindingAdapter({"items_in_profile", "listener"})
-    public static void setItemsInProfile(RecyclerView recyclerView, List<Poll> seriesList, PollsAdaptarWithHeader.PollsAdapterWithHeaderListener listener) {
+    @BindingAdapter({"page_poll_items", "listener"})
+    public static void setPagePollItems(RecyclerView recyclerView, List<Poll> seriesList, PollsAdaptarWithHeader.PollsAdapterWithHeaderListener listener) {
+        if (seriesList != null) {
+            PollsAdaptarWithHeader adapter = new PollsAdaptarWithHeader(seriesList, recyclerView.getContext(), listener, R.layout.header_page_detail);
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @BindingAdapter({"my_poll_items", "listener"})
+    public static void setMyPollItems(RecyclerView recyclerView, List<Poll> seriesList, PollsAdaptarWithHeader.PollsAdapterWithHeaderListener listener) {
         if (seriesList != null) {
             PollsAdaptarWithHeader adapter = new PollsAdaptarWithHeader(seriesList, recyclerView.getContext(), listener, R.layout.header_profile_my_polls);
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @BindingAdapter({"my_page_items", "listener"})
+    public static void setMyPageItems(RecyclerView recyclerView, List<Page> seriesList, PagesAdaptarWithHeader.PagesAdapterWithHeaderListener listener) {
+        if (seriesList != null) {
+            PagesAdaptarWithHeader adapter = new PagesAdaptarWithHeader(seriesList, recyclerView.getContext(), listener, R.layout.header_profile_my_pages);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }

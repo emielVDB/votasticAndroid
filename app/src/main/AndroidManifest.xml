@@ -98,6 +98,10 @@
         <activity
             android:name=".gui.activities.RandomPollsActivity"
             android:label="@string/title_activity_random_polls"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".gui.activities.PageDetailActivity"
+            android:label="@string/title_activity_page_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
