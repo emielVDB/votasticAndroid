@@ -12,6 +12,7 @@
         <Button
             android:id="@+id/btnProfileMyPolls"
             android:text="My polls"
+            android:textColor="@color/black"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

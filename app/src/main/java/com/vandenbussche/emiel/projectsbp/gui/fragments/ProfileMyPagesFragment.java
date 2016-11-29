@@ -1,23 +1,23 @@
 package com.vandenbussche.emiel.projectsbp.gui.fragments;
 
 
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.vandenbussche.emiel.projectsbp.R;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
  */
-public class ProfileFragment extends Fragment {
+public class ProfileMyPagesFragment extends Fragment {
 
 
-    public ProfileFragment() {
+    public ProfileMyPagesFragment() {
         // Required empty public constructor
     }
 
@@ -26,15 +26,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return inflater.inflate(R.layout.fragment_profile_my_pages, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        if(savedInstanceState == null){
-            getChildFragmentManager().beginTransaction().add(R.id.frmContent, new ProfileMyPollsFragment()).commit();
-        }
-    }
 }

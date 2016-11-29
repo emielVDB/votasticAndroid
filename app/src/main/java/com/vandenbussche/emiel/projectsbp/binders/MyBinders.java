@@ -35,7 +35,7 @@ public class MyBinders {
     @BindingAdapter({"items_in_profile", "listener"})
     public static void setItemsInProfile(RecyclerView recyclerView, List<Poll> seriesList, PollsAdaptarWithHeader.PollsAdapterWithHeaderListener listener) {
         if (seriesList != null) {
-            PollsAdaptarWithHeader adapter = new PollsAdaptarWithHeader(seriesList, recyclerView.getContext(), listener, R.layout.header_profile);
+            PollsAdaptarWithHeader adapter = new PollsAdaptarWithHeader(seriesList, recyclerView.getContext(), listener, R.layout.header_profile_my_polls);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }

@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +39,7 @@ public class ProfileMyPollsFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile_my_polls, container, false);
         binding.pollsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         binding.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
-        newsFragmentViewModel = new ProfileMyPollsFragmentViewModel(binding, getContext());
+        newsFragmentViewModel = new ProfileMyPollsFragmentViewModel(binding, getContext(), getFragmentManager());
         newsFragmentViewModel.loadPolls();
 
         return binding.getRoot();
