@@ -19,6 +19,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="@{poll.poll.pageId == null? View.GONE : View.VISIBLE}">
+            <Button
+                android:id="@+id/btnPageDetail"
+                android:text="@{poll.poll.pageTitle}"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginStart="0dp"
+                android:paddingStart="0dp"/>
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btnFollowPage"
+                android:text="Follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/buttonBarButtonStyle"/>
+        </LinearLayout>
+        <View
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/half_margin"
+            android:background="@color/lightGray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="@{poll.poll.pageId == null? View.GONE : View.VISIBLE}"/>
 
         <TextView
             android:textSize="@dimen/title_size"

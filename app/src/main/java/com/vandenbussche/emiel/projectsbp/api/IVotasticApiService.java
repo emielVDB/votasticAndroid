@@ -4,6 +4,7 @@ package com.vandenbussche.emiel.projectsbp.api;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 import com.vandenbussche.emiel.projectsbp.models.requests.PageRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
+import com.vandenbussche.emiel.projectsbp.models.requests.SearchRequest;
 import com.vandenbussche.emiel.projectsbp.models.responses.PageResponse;
 import com.vandenbussche.emiel.projectsbp.models.responses.PollResponse;
 
@@ -13,6 +14,8 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -28,4 +31,10 @@ public interface IVotasticApiService {
 
     @POST("/api/my/pages")
     Observable<PageResponse> saveNewPage(@Body PageRequest pagerequest);
+
+    @GET("/api/polls/random")
+    Observable<List<PollResponse>> getRandomPolls();
+
+    @GET("/api/polls/find")
+    Observable<List<PollResponse>> getFindPolls(@Query("text") String searchText, @Query("maxUploadTime") long maxUploadTime);
 }

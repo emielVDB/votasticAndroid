@@ -1,7 +1,10 @@
 package com.vandenbussche.emiel.projectsbp.models.responses;
 
 import com.vandenbussche.emiel.projectsbp.models.Option;
+import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.Reaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -106,5 +109,23 @@ public class PollResponse {
 
     public void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
+    }
+
+    public Poll toPoll(){
+        Poll poll = new Poll();
+        poll.set_id(get_id());
+        poll.setQuestion(getQuestion());
+        poll.setOptions(getOptions());
+        poll.setTags(getTags());
+        poll.setFlag(0);
+        poll.setChoiceIndex(getChoiceIndex());
+        poll.setPageId(getPageId());
+        poll.setPageTitle(getPageTitle());
+        poll.setReactions(new ArrayList<Reaction>());
+        poll.setTotalReactions(getTotalReactions());
+        poll.setTotalVotes(getTotalVotes());
+        poll.setUploadTime(getUploadTime());
+
+        return poll;
     }
 }

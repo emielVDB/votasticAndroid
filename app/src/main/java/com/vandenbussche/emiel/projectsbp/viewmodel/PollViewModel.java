@@ -1,5 +1,6 @@
 package com.vandenbussche.emiel.projectsbp.viewmodel;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.binders.models.PollBinderModel;
 import com.vandenbussche.emiel.projectsbp.databinding.RowPollBinding;
+import com.vandenbussche.emiel.projectsbp.gui.activities.PageDetailActivity;
 import com.vandenbussche.emiel.projectsbp.models.Option;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 
@@ -30,6 +32,18 @@ public class PollViewModel {
     public PollViewModel(ViewGroup parent){
         binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_poll, parent, false);
         optionsLinearLayout = (LinearLayout)binding.getRoot().findViewById(R.id.optionsLinearLayout);
+        binding.btnPageDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDetailsOfPage();
+            }
+        });
+        binding.btnFollowPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                followPage();
+            }
+        });
     }
 
     public void setPoll(Poll poll){
@@ -85,5 +99,16 @@ public class PollViewModel {
         for(OptionViewModel ovm : optionViewModels){
             ovm.option.setMaxVotes(maxVotes);
         }
+    }
+
+    private void showDetailsOfPage(){
+        Intent intent = new Intent(binding.getRoot().getContext(), PageDetailActivity.class);
+        intent.putExtra("title", poll.poll.getPageTitle());
+        intent.putExtra("_id", poll.poll.getPageId());
+        binding.getRoot().getContext().startActivity(intent);
+    }
+
+    private void followPage() {
+        //todo: follow code
     }
 }
