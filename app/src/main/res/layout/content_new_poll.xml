@@ -42,7 +42,7 @@
                 android:text="@={poll.question}" />
 
 
-            <!--_________________________________tags______________________________-->
+            <!--_________________________________options______________________________-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

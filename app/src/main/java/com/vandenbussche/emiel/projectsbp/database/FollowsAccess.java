@@ -6,12 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.vandenbussche.emiel.projectsbp.models.Option;
-import com.vandenbussche.emiel.projectsbp.models.Page;
-import com.vandenbussche.emiel.projectsbp.models.Poll;
-import com.vandenbussche.emiel.projectsbp.models.Reaction;
+import com.vandenbussche.emiel.projectsbp.models.Follow;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,16 +21,14 @@ import rx.schedulers.Schedulers;
  * Created by Stijn on 5/10/2016.
  * Thanks to: http://beust.com/weblog/2015/06/01/easy-sqlite-on-android-with-rxjava/
  */
-public class PagesAccess {
+public class FollowsAccess {
 
-    public static final String TAG = "PagesAccess";
+    public static final String TAG = "FollowsAccess";
 
     public static final String[] allColumns = new String[]{
-            Contract.PagesColumns._ID,
-            Contract.PagesColumns.COLUMN_TITLE,
-            Contract.PagesColumns.COLUMN_TAGS,
-            Contract.PagesColumns.COLUMN_POLLS_COUNT,
-            Contract.PagesColumns.COLUMN_FLAG,
+            Contract.FollowsColumns._ID,
+            Contract.FollowsColumns.COLUMN_PAGE_ID,
+            Contract.FollowsColumns.COLUMN_FLAG,
     };
 
 
@@ -43,25 +36,25 @@ public class PagesAccess {
     ** Get all
      */
 
-    public static Observable<List<Page>> getAll(Context context) {
+    public static Observable<List<Follow>> getAll(Context context) {
 
         return makeObservable(getAllCallable(context))
                 .subscribeOn(Schedulers.computation());
     }
 
-    private static Callable<List<Page>> getAllCallable(final Context context) {
-        return new Callable<List<Page>>() {
+    private static Callable<List<Follow>> getAllCallable(final Context context) {
+        return new Callable<List<Follow>>() {
             @Override
-            public List<Page> call() throws Exception {
+            public List<Follow> call() throws Exception {
 
 
 
-                Cursor mData = context.getContentResolver().query(com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGES_URI, allColumns, null, null, null);
+                Cursor mData = context.getContentResolver().query(com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_URI, allColumns, null, null, null);
 
                 //door te tellen hoeveel records er zijn, zijn we zeker dat de data binnen gehaald is
                 mData.getCount();
 
-                return cursorToPageList(mData);
+                return cursorToFollowList(mData);
             }
         };
     }
@@ -72,25 +65,25 @@ public class PagesAccess {
     ** GetByKey
      */
 
-    public static Observable<List<Page>> getByKey(Context context, String key, String value) {
+    public static Observable<List<Follow>> getByKey(Context context, String key, String value) {
 
 
         return makeObservable(getByKeyCallable(context, key, value))
                 .subscribeOn(Schedulers.computation());
     }
 
-    private static Callable<List<Page>> getByKeyCallable(final Context context, final String key, final String value) {
-        return new Callable<List<Page>>() {
+    private static Callable<List<Follow>> getByKeyCallable(final Context context, final String key, final String value) {
+        return new Callable<List<Follow>>() {
             @Override
-            public List<Page> call() throws Exception {
+            public List<Follow> call() throws Exception {
 
 
-                Cursor mData = context.getContentResolver().query(com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGES_URI, allColumns,  key + " = ?", new String[]{value}, null);
+                Cursor mData = context.getContentResolver().query(com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_URI, allColumns,  key + " = ?", new String[]{value}, null);
 
                 //door te tellen hoeveel records er zijn, zijn we zeker dat de data binnen gehaald is
                 mData.getCount();
 
-                return cursorToPageList(mData);
+                return cursorToFollowList(mData);
             }
         };
     }
@@ -112,7 +105,7 @@ public class PagesAccess {
             @Override
             public Long call() throws Exception {
 
-                context.getContentResolver().insert(com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGES_URI, values);
+                context.getContentResolver().insert(com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_URI, values);
 
                 return 0l;
             }
@@ -125,16 +118,13 @@ public class PagesAccess {
      */
 
     //todo: content provider gebruiken
-    public static Observable<Long> update(Context context, String table, String[] columns, String[] columnValues, String key, String value) {
-        DatabaseHelper connection = DatabaseHelper.getInstance(context);
-        SQLiteDatabase db = connection.getWritableDatabase();
-
-        return makeObservable(update(db, table, columns, columnValues, key, value))
+    public static Observable<Long> update(Context context, ContentValues values, String key, String value) {
+        return makeObservable(updateCallable(context, values, key, value))
                 .subscribeOn(Schedulers.computation());
     }
 
-    private static Callable<Long> update(final SQLiteDatabase db, final String table, final String[] columns, final Object[] columnValues,
-                                         final String key, final String value) {
+    private static Callable<Long> updateCallable(final Context context, final ContentValues values,
+                                                 final String key, final String value) {
         return new Callable<Long>() {
             @Override
             public Long call() throws Exception {
@@ -142,29 +132,10 @@ public class PagesAccess {
 
                 ContentValues values = new ContentValues();
                 try {
-                    int counter = 0;
-                    for (String column : columns) {
-                        Type type = columnValues[counter].getClass();
+                    context.getContentResolver().update(com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_URI, values, key + " = ?", new String[]{value});
 
-                        if (type == String.class) {
-                            values.put(column, (String) columnValues[counter]);
-                        } else if (type == Integer.class) {
-                            values.put(column, (Integer) columnValues[counter]);
-                        } else if (type == Boolean.class) {
-                            values.put(column, (Boolean) columnValues[counter]);
-                        } else if (type == Double.class) {
-                            values.put(column, (Double) columnValues[counter]);
-                        }
+                    return 0l;
 
-                        counter++;
-                    }
-
-                    changedRows = db.update(
-                            table,
-                            values,
-                            key + " = ?",
-                            new String[]{value}
-                    );
                 } catch (Exception ex) {
                     Log.d(getClass().getName(), ex.getMessage());
                 }
@@ -221,45 +192,34 @@ public class PagesAccess {
         );
     }
 
-    public static Page cursorToPage(Cursor cursor){
-        Page page = new Page();
-        page.set_id(cursor.getString(cursor.getColumnIndex(Contract.PagesColumns._ID)));
-        page.setTitle(cursor.getString(cursor.getColumnIndex(Contract.PagesColumns.COLUMN_TITLE)));
-        page.setFlag(cursor.getInt(cursor.getColumnIndex(Contract.PagesColumns.COLUMN_FLAG)));
-        page.setPollsCount(cursor.getInt(cursor.getColumnIndex(Contract.PagesColumns.COLUMN_POLLS_COUNT)));
+    public static Follow cursorToFollow(Cursor cursor){
+        Follow follow = new Follow();
+        follow.setPageId(cursor.getString(cursor.getColumnIndex(Contract.FollowsColumns.COLUMN_PAGE_ID)));
+        follow.setFlag(cursor.getInt(cursor.getColumnIndex(Contract.FollowsColumns.COLUMN_FLAG)));
 
-        List<String> tags = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(Contract.PagesColumns.COLUMN_TAGS)),
-                new TypeToken<ArrayList<String>>() {}.getType());//list<String> type
-        page.setTags(tags);
 
-        return page;
+        return follow;
     }
 
-    public static List<Page> cursorToPageList(Cursor cursor){
-        List<Page> pages = new ArrayList<>();
+    public static List<Follow> cursorToFollowList(Cursor cursor){
+        List<Follow> follows = new ArrayList<>();
         while (cursor.moveToNext()){
-             pages.add(cursorToPage(cursor));
+             follows.add(cursorToFollow(cursor));
         }
 
-        return pages;
+        return follows;
     }
 
-    public static ContentValues pageToContentValuesList(Page page) {
+    public static ContentValues followToContentValuesList(Follow follow) {
         String[] columns = new String[]{
-                Contract.PagesColumns._ID,
-                Contract.PagesColumns.COLUMN_TITLE,
-                Contract.PagesColumns.COLUMN_TAGS,
-                Contract.PagesColumns.COLUMN_POLLS_COUNT,
-                Contract.PagesColumns.COLUMN_FLAG,
+                Contract.FollowsColumns.COLUMN_PAGE_ID,
+                Contract.FollowsColumns.COLUMN_FLAG,
         };
 
 
         Object[] columnValues = new Object[]{
-                page.get_id(),
-                page.getTitle(),
-                new Gson().toJson(page.getTags()),
-                page.getPollsCount(),
-                page.getFlag()};
+                follow.getPageId(),
+                follow.getFlag()};
 
         ContentValues contentValues = new ContentValues();
         int counter = 0;

@@ -29,9 +29,11 @@ public class VotasticContentProvider extends ContentProvider {
     private static final int POLL_ID = 2;
     private static final int PAGES = 3;
     private static final int PAGE_ID = 4;
+    private static final int FOLLOWS = 5;
 
     private static HashMap<String, String> POLLS_PROJECTION_MAP;
     private static HashMap<String, String> PAGES_PROJECTION_MAP;
+    private static HashMap<String, String> FOLLOWS_PROJECTION_MAP;
 
     private static final UriMatcher uriMatcher;
 
@@ -41,6 +43,7 @@ public class VotasticContentProvider extends ContentProvider {
         uriMatcher.addURI(Contract.AUTHORITY, "polls/#", POLL_ID);
         uriMatcher.addURI(Contract.AUTHORITY, "pages", PAGES);
         uriMatcher.addURI(Contract.AUTHORITY, "pages/#", PAGE_ID);
+        uriMatcher.addURI(Contract.AUTHORITY, "follows", FOLLOWS);
     }
 
     @Override
@@ -64,6 +67,11 @@ public class VotasticContentProvider extends ContentProvider {
         PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_TAGS, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_TAGS);
         PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_POLLS_COUNT, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_POLLS_COUNT);
         PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns.COLUMN_FLAG);
+        
+        FOLLOWS_PROJECTION_MAP = new HashMap<>();
+        FOLLOWS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns._ID);
+        FOLLOWS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_PAGE_ID, com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_PAGE_ID);
+        FOLLOWS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_FLAG);
 
         return true;
     }
@@ -80,6 +88,10 @@ public class VotasticContentProvider extends ContentProvider {
             case PAGES:
                 queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME);
                 queryBuilder.setProjectionMap(PAGES_PROJECTION_MAP);
+                break;
+            case FOLLOWS:
+                queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME);
+                queryBuilder.setProjectionMap(FOLLOWS_PROJECTION_MAP);
                 break;
 
             case POLL_ID:
@@ -101,6 +113,7 @@ public class VotasticContentProvider extends ContentProvider {
                 selectionArgs = DatabaseUtils.appendSelectionArgs(selectionArgs, new String[]{"" + pageid});
 
                 break;
+
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -136,6 +149,8 @@ public class VotasticContentProvider extends ContentProvider {
                 return Contract.PAGES_CONTENT_TYPE;
             case PAGE_ID:
                 return Contract.PAGES_ITEM_CONTENT_TYPE;
+            case FOLLOWS:
+                return Contract.FOLLOWS_CONTENT_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -165,6 +180,15 @@ public class VotasticContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(pagesItemUri, null);
                 return pagesItemUri;
 
+            case FOLLOWS:
+                newRowId = db.insert(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                Uri followsItemUri = ContentUris.withAppendedId(Contract.FOLLOWS_ITEM_URI, newRowId);
+                getContext().getContentResolver().notifyChange(followsItemUri, null);
+                return followsItemUri;
+
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -187,6 +211,13 @@ public class VotasticContentProvider extends ContentProvider {
             case PAGES:
                 count = db.delete(
                         com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            case FOLLOWS:
+                count = db.delete(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
@@ -248,6 +279,14 @@ public class VotasticContentProvider extends ContentProvider {
             case PAGES:
                 count = db.update(
                         com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            case FOLLOWS:
+                count = db.update(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs

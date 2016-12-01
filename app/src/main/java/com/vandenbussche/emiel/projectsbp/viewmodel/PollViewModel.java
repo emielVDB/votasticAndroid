@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.binders.models.PollBinderModel;
+import com.vandenbussche.emiel.projectsbp.database.FollowsCache;
 import com.vandenbussche.emiel.projectsbp.databinding.RowPollBinding;
 import com.vandenbussche.emiel.projectsbp.gui.activities.PageDetailActivity;
 import com.vandenbussche.emiel.projectsbp.models.Option;
@@ -109,6 +111,13 @@ public class PollViewModel {
     }
 
     private void followPage() {
-        //todo: follow code
+        if(binding.btnFollowPage.getText().toString().toLowerCase().equals("follow")){
+            FollowsCache.addPageId(binding.getRoot().getContext(), poll.poll.getPageId());
+            poll.notifyPropertyChanged(BR.following);
+            //todo: send broadcast that a follow changed
+        }else{
+            //todo: remove the follow
+        }
+
     }
 }

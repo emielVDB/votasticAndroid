@@ -38,9 +38,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //drop vorige table, create nieuwe
         db.execSQL(Contract.PollsDB.DELETE_TABLE);
         db.execSQL(Contract.PagesDB.DELETE_TABLE);
+        db.execSQL(Contract.FollowsDB.DELETE_TABLE);
 
         db.execSQL(Contract.PollsDB.CREATE_TABLE);
         db.execSQL(Contract.PagesDB.CREATE_TABLE);
+        db.execSQL(Contract.FollowsDB.CREATE_TABLE);
+
 
     }
 

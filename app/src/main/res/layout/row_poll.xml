@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"/>
             <Button
                 android:id="@+id/btnFollowPage"
-                android:text="Follow"
+                android:text="@{poll.following? @string/follow : @string/unfollow}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonBarButtonStyle"/>

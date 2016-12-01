@@ -12,6 +12,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -37,4 +38,10 @@ public interface IVotasticApiService {
 
     @GET("/api/polls/find")
     Observable<List<PollResponse>> getFindPolls(@Query("text") String searchText, @Query("maxUploadTime") long maxUploadTime);
+
+    @POST("/api/my/follows")
+    Observable<String> addFollow(@Query("pageId") String pageId);
+
+    @DELETE("/api/my/follows")
+    Observable<String> deleteFollow(@Query("pageId") String pageId);
 }

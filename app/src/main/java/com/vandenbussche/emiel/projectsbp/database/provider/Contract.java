@@ -14,12 +14,15 @@ public class Contract {
     public static final Uri POLLS_ITEM_URI = Uri.parse("content://" + AUTHORITY + "/polls/");
     public static final Uri PAGES_URI = Uri.parse("content://" + AUTHORITY + "/pages");
     public static final Uri PAGES_ITEM_URI = Uri.parse("content://" + AUTHORITY + "/pages/");
+    public static final Uri FOLLOWS_URI = Uri.parse("content://" + AUTHORITY + "/follows");
+    public static final Uri FOLLOWS_ITEM_URI = Uri.parse("content://" + AUTHORITY + "/follows/");
     
     //MIME-TYPES
     public static final String POLLS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.votastic.poll";
     public static final String POLLS_ITEM_CONTENT_TYPE = "vnd.android.cursor.item/vnd.votastic.poll";
     public static final String PAGES_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.votastic.page";
     public static final String PAGES_ITEM_CONTENT_TYPE = "vnd.android.cursor.item/vnd.votastic.page";
+    public static final String FOLLOWS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd.votastic.follow";
 
     public static final int POLL_ID_PATH_POSITION = 1;
     public static final int PAGE_ID_PATH_POSITION = 1;

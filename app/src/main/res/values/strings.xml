@@ -21,4 +21,6 @@
     <string name="no">No</string>
     <string name="choosePage">Choose a page</string>
     <string name="title_activity_page_detail">PageDetailActivity</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
 </resources>
