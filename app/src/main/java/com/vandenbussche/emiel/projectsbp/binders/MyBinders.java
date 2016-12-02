@@ -1,6 +1,7 @@
 package com.vandenbussche.emiel.projectsbp.binders;
 
 import android.animation.LayoutTransition;
+import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableList;
@@ -16,6 +17,7 @@ import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptar;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader;
 import com.vandenbussche.emiel.projectsbp.databinding.RowNewPollTagBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.RowTagBinding;
+import com.vandenbussche.emiel.projectsbp.gui.activities.RandomPollsActivity;
 import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 
@@ -71,13 +73,21 @@ public class MyBinders {
     }
 
     @BindingAdapter("tags")
-    public static void setTags(LinearLayout layout, List<String> tags) {
+    public static void setTags(final LinearLayout layout, List<String> tags) {
         layout.removeAllViews();
         if(tags == null) return;
-        for (String tag : tags) {
+        for (final String tag : tags) {
             RowTagBinding binding = DataBindingUtil.inflate(LayoutInflater.from(layout.getContext()), R.layout.row_tag, layout, false);
             binding.setTag(tag);
             layout.addView(binding.getRoot());
+            binding.btnTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(layout.getContext(), RandomPollsActivity.class);
+                    intent.putExtra("query", tag);
+                    layout.getContext().startActivity(intent);
+                }
+            });
         }
     }
 

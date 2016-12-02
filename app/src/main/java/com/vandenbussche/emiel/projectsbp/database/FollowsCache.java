@@ -95,4 +95,35 @@ public class FollowsCache {
 
         return false;
     }
+
+    public static void deletePageId(final Context context, final String pageId) {
+        Follow follow= null;
+        for(Follow followItem : getFollows()){
+            if(followItem.getPageId().equals(pageId)) follow = followItem;
+        }
+        if(follow == null) return;
+
+        follow.setFlag(Follow.Flags.UPLOAD_REMOVE);
+        follows.remove(follow);
+        updatePollInDatabase(context, follow);
+
+        ApiHelper.getApiService(context).deleteFollow(follow.getPageId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        //delete the poll from the locale db
+                        FollowsAccess.delete(context, Contract.FollowsDB.COLUMN_PAGE_ID, pageId)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Long>() {
+                                    @Override
+                                    public void call(Long aLong) {
+
+                                    }
+                                });
+                    }
+                });
+    }
 }

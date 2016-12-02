@@ -39,6 +39,9 @@ public interface IVotasticApiService {
     @GET("/api/polls/find")
     Observable<List<PollResponse>> getFindPolls(@Query("text") String searchText, @Query("maxUploadTime") long maxUploadTime);
 
+    @GET("/api/polls/news")
+    Observable<List<PollResponse>> getNewsPolls(@Query("maxUploadTime") long maxUploadTime);
+
     @POST("/api/my/follows")
     Observable<String> addFollow(@Query("pageId") String pageId);
 

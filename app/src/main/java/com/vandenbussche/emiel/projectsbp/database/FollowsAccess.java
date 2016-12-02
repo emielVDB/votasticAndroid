@@ -149,25 +149,21 @@ public class FollowsAccess {
     ** Delete
      */
     //todo: delete gebruikt content provider
-    public static Observable<Long> delete(Context context, String table, String key, String value) {
+    public static Observable<Long> delete(Context context, String key, String value) {
         DatabaseHelper connection = DatabaseHelper.getInstance(context);
         SQLiteDatabase db = connection.getWritableDatabase();
 
-        return makeObservable(delete(db, table, key, value))
+        return makeObservable(deleteCallable(context, key, value))
                 .subscribeOn(Schedulers.computation());
     }
 
-    private static Callable<Long> delete(final SQLiteDatabase db, final String table, final String key, final String value) {
+    private static Callable<Long> deleteCallable(final Context context, final String key, final String value) {
         return new Callable<Long>() {
             @Override
             public Long call() throws Exception {
-                long changedRows = db.delete(
-                        table,
-                        key + " = ?",
-                        new String[]{value}
-                );
+                context.getContentResolver().delete(com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_URI, key + " = ?", new String[]{value});
 
-                return changedRows;
+                return 0L;
             }
         };
     }

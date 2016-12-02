@@ -1,5 +1,7 @@
 package com.vandenbussche.emiel.projectsbp.gui.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.adapters.IncrementalPollsAdaptarWithHeader;
@@ -29,6 +32,7 @@ public class RandomPollsActivity extends AppCompatActivity implements Incrementa
 
     IncrementalPollsAdaptarWithHeader adapter = null;
     RecyclerView recyclerView;
+    SearchView searchView;
 
     String searchText;
 
@@ -40,12 +44,14 @@ public class RandomPollsActivity extends AppCompatActivity implements Incrementa
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addPollsToAdapter();
-
         recyclerView = (RecyclerView)findViewById(R.id.pollsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
-        final SearchView searchView = (SearchView)findViewById(R.id.search);
+
+        searchView = (SearchView)findViewById(R.id.search);
+        searchView.setIconified(false);
+        searchView.clearFocus();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -60,6 +66,7 @@ public class RandomPollsActivity extends AppCompatActivity implements Incrementa
             }
         });
 
+
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
@@ -69,12 +76,32 @@ public class RandomPollsActivity extends AppCompatActivity implements Incrementa
                 return false;
             }
         });
+
+        if(getIntent() != null && getIntent().getStringExtra("query") != null){
+            searchText = getIntent().getStringExtra("query");
+            searchView.setQuery(searchText, true);
+
+        }else {
+            addPollsToAdapter();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+
+        if(getIntent() != null && getIntent().getStringExtra("query") != null){
+            searchText = getIntent().getStringExtra("query");
+            searchView.setQuery(searchText, true);
+        }
     }
 
     private void searchPolls() {
         if(searchText.equals("")) searchText = null;
         if(searchText == null) return;
 
+        if(adapter != null)
         adapter.clearItems();
 
 
@@ -131,6 +158,7 @@ public class RandomPollsActivity extends AppCompatActivity implements Incrementa
                     }
                 });
     }
+
 
     @Override
     public void getNewPolls(Poll lastPoll) {

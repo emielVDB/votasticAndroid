@@ -98,6 +98,7 @@
         <activity
             android:name=".gui.activities.RandomPollsActivity"
             android:label="@string/title_activity_random_polls"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".gui.activities.PageDetailActivity"

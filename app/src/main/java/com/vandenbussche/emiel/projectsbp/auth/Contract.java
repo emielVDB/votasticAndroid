@@ -4,7 +4,7 @@ package com.vandenbussche.emiel.projectsbp.auth;
  * Created by Stijn on 15/10/2016.
  */
 public class Contract {
-    public static final String BASEURL = "http://192.168.9.138:3000";
+    public static final String BASEURL = "http://172.30.252.101:3000";
 
     public static final String ACCOUNT_TYPE = "com.vandenbussche.emiel.projectsbp.account";
 

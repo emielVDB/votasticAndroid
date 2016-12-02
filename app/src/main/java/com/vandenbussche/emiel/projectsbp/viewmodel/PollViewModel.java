@@ -114,10 +114,12 @@ public class PollViewModel {
         if(binding.btnFollowPage.getText().toString().toLowerCase().equals("follow")){
             FollowsCache.addPageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
-            //todo: send broadcast that a follow changed
         }else{
-            //todo: remove the follow
+            FollowsCache.deletePageId(binding.getRoot().getContext(), poll.poll.getPageId());
+            poll.notifyPropertyChanged(BR.following);
         }
+
+        //todo: send broadcast that a follow changed
 
     }
 }
