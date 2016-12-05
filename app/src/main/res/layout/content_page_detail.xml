@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="dataLoaded"
+            type="boolean"/>
         <variable
             name="pollList"
             type="com.vandenbussche.emiel.projectsbp.models.PollList" />
@@ -23,8 +25,13 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/pollsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:page_poll_items="@{pollList.data}"
-            app:listener="@{adapterListener}" />
+            android:layout_height="match_parent" />
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/pollsRecyclerView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:page_poll_items="@{pollList.data}"-->
+            <!--app:listener="@{adapterListener}" />-->
     </RelativeLayout>
 </layout>

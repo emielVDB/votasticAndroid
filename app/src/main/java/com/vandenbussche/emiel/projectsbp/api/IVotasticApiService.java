@@ -47,4 +47,7 @@ public interface IVotasticApiService {
 
     @DELETE("/api/my/follows")
     Observable<String> deleteFollow(@Query("pageId") String pageId);
+
+    @GET("/api/polls/pageid")
+    Observable<List<PollResponse>> getPollsByPageId(@Query("pageId") String pageId, @Query("maxUploadTime") long maxUploadTime);
 }
