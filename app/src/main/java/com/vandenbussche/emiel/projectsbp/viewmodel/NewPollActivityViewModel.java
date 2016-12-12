@@ -6,8 +6,10 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +36,7 @@ import rx.schedulers.Schedulers;
  * Created by emielPC on 16/11/16.
  */
 public class NewPollActivityViewModel {
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     ActivityNewPollBinding binding;
     Context context;
 
@@ -72,6 +75,37 @@ public class NewPollActivityViewModel {
                 doneButtonClicked();
             }
         });
+        binding.content.btnAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addImageButtonClicked();
+            }
+        });
+    }
+
+    private void addImageButtonClicked() {
+        CharSequence colors[] = new CharSequence[] {"Take picture", "Gallery"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Add image");
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // the user clicked on colors[which]
+                if(which == 0){
+                    dispatchTakePictureIntent();
+                }
+            }
+        });
+        builder.show();
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(takePictureIntent);
+        }
     }
 
     private void doneButtonClicked(){

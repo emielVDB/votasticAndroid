@@ -29,6 +29,17 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             android:animateLayoutChanges="true">
 
+            <Button
+                android:id="@+id/btnAddImage"
+                android:text="Add image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:visibility="gone"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

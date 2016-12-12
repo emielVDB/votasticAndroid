@@ -48,6 +48,7 @@ public class OptionBinderModel extends BaseObservable{
     }
 
     public void setHasVote(int hasVote) {
+        if(this.hasVote == hasVote) return;
         this.hasVote = hasVote;
         notifyPropertyChanged(BR.hasVote);
         setShowPercentage(0);

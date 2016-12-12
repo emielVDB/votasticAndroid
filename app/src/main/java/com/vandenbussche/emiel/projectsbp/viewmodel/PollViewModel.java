@@ -7,17 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.gson.Gson;
 import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.VotasticApplication;
 import com.vandenbussche.emiel.projectsbp.binders.models.PollBinderModel;
 import com.vandenbussche.emiel.projectsbp.database.FollowsCache;
 import com.vandenbussche.emiel.projectsbp.databinding.RowPollBinding;
 import com.vandenbussche.emiel.projectsbp.gui.activities.PageDetailActivity;
 import com.vandenbussche.emiel.projectsbp.models.Option;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.requests.VoteRequest;
+import com.vandenbussche.emiel.projectsbp.models.responses.PollUpdateResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.socket.emitter.Emitter;
 
 /**
  * Created by emielPC on 11/11/16.
@@ -65,6 +71,8 @@ public class PollViewModel {
         }
 
         updateMaximumVoteInOptions();
+
+        startUpdating();
     }
 
 
@@ -72,7 +80,19 @@ public class PollViewModel {
         return binding.getRoot();
     }
 
-    public void startUpdating(){}
+    public void startUpdating(){
+        VotasticApplication.getConnection().on("poll" + poll.poll.get_id(), new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                String obj = (String)args[0];
+                PollUpdateResponse pollUpdateResponse = new Gson().fromJson(obj, PollUpdateResponse.class);
+
+                if(pollUpdateResponse.getKind().equals("vote")) {
+                    addVote(pollUpdateResponse.getVoteResponse().getVoteIndex());//todo index uit args halen
+                }
+            }
+        });
+    }
 
     public void stopUpdating(){}
 
@@ -80,13 +100,31 @@ public class PollViewModel {
 
     }
 
+    public void addVote(int index){
+        //als eerste vote is, mooie animatie maken
+        poll.poll.getOptions().get(index).setVotes(poll.poll.getOptions().get(index).getVotes()+1);
+        if(optionViewModels.get(0).option.getMaxVotes() == 0){
+            for (OptionViewModel optionVM :
+                    optionViewModels) {
+                optionVM.option.setShowPercentage(0);
+                optionVM.option.setNewNess(1);
+            }
+        }
+        updateMaximumVoteInOptions();
+    }
+
     public void optionClicked(Option option){
+        VoteRequest voteRequest = new VoteRequest(poll.poll.get_id(), poll.poll.getOptions().indexOf(option));
+        VotasticApplication.getConnection().emit(
+                "voteSubmit",
+                new Gson().toJson(voteRequest));
+
+        addVote(voteRequest.getVoteIndex());
+
         //alle andere op 0zetten
         for (OptionViewModel optionVM :
                 optionViewModels) {
-
             optionVM.option.setHasVote(optionVM.option.getOption() == option? 1 : 0);
-            optionVM.option.setNewNess(1);
         }
     }
 
