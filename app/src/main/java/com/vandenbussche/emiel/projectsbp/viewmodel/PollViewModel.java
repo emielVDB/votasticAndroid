@@ -37,9 +37,9 @@ public class PollViewModel {
     List<OptionViewModel> optionViewModels;
 
 
-    public PollViewModel(ViewGroup parent){
+    public PollViewModel(ViewGroup parent) {
         binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_poll, parent, false);
-        optionsLinearLayout = (LinearLayout)binding.getRoot().findViewById(R.id.optionsLinearLayout);
+        optionsLinearLayout = (LinearLayout) binding.getRoot().findViewById(R.id.optionsLinearLayout);
         binding.btnPageDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +54,7 @@ public class PollViewModel {
         });
     }
 
-    public void setPoll(Poll poll){
+    public void setPoll(Poll poll) {
         this.poll = new PollBinderModel(poll);
         binding.setPoll(this.poll);
         binding.executePendingBindings();
@@ -62,12 +62,18 @@ public class PollViewModel {
         optionViewModels = new ArrayList<>();
 
         optionsLinearLayout.removeAllViews();
+        int optionLoopnr = 0;
         for (Option option : poll.getOptions()) {
             OptionViewModel ovm = new OptionViewModel(optionsLinearLayout, this);
             ovm.setOption(option);
+            if (poll.getChoiceIndex() != -1) {
+                int hasVote = poll.getChoiceIndex() == optionLoopnr? 1 : 0;
+                ovm.option.setHasVote(hasVote);
+            }
+
             optionsLinearLayout.addView(ovm.getRoot());
             optionViewModels.add(ovm);
-
+            optionLoopnr++;
         }
 
         updateMaximumVoteInOptions();
@@ -76,34 +82,37 @@ public class PollViewModel {
     }
 
 
-    public View getRoot(){
+    public View getRoot() {
         return binding.getRoot();
     }
 
-    public void startUpdating(){
+    public void startUpdating() {
+        VotasticApplication.getConnection().emit("join", "poll"+poll.poll.get_id());
         VotasticApplication.getConnection().on("poll" + poll.poll.get_id(), new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                String obj = (String)args[0];
+                String obj = (String) args[0];
                 PollUpdateResponse pollUpdateResponse = new Gson().fromJson(obj, PollUpdateResponse.class);
 
-                if(pollUpdateResponse.getKind().equals("vote")) {
+                if (pollUpdateResponse.getKind().equals("vote")) {
                     addVote(pollUpdateResponse.getVoteResponse().getVoteIndex());//todo index uit args halen
                 }
             }
         });
     }
 
-    public void stopUpdating(){}
+    public void stopUpdating() {
+        VotasticApplication.getConnection().emit("leave", "poll"+poll.poll.get_id());
+    }
 
-    public void reloadData(){
+    public void reloadData() {
 
     }
 
-    public void addVote(int index){
+    public void addVote(int index) {
         //als eerste vote is, mooie animatie maken
-        poll.poll.getOptions().get(index).setVotes(poll.poll.getOptions().get(index).getVotes()+1);
-        if(optionViewModels.get(0).option.getMaxVotes() == 0){
+        poll.poll.getOptions().get(index).setVotes(poll.poll.getOptions().get(index).getVotes() + 1);
+        if (optionViewModels.get(0).option.getMaxVotes() == 0) {
             for (OptionViewModel optionVM :
                     optionViewModels) {
                 optionVM.option.setShowPercentage(0);
@@ -113,7 +122,7 @@ public class PollViewModel {
         updateMaximumVoteInOptions();
     }
 
-    public void optionClicked(Option option){
+    public void optionClicked(Option option) {
         VoteRequest voteRequest = new VoteRequest(poll.poll.get_id(), poll.poll.getOptions().indexOf(option));
         VotasticApplication.getConnection().emit(
                 "voteSubmit",
@@ -124,24 +133,24 @@ public class PollViewModel {
         //alle andere op 0zetten
         for (OptionViewModel optionVM :
                 optionViewModels) {
-            optionVM.option.setHasVote(optionVM.option.getOption() == option? 1 : 0);
+            optionVM.option.setHasVote(optionVM.option.getOption() == option ? 1 : 0);
         }
     }
 
-    public void updateMaximumVoteInOptions(){
+    public void updateMaximumVoteInOptions() {
         int maxVotes = 0;
-        for(Option option : poll.poll.getOptions()){
-            if(option.getVotes() > maxVotes){
+        for (Option option : poll.poll.getOptions()) {
+            if (option.getVotes() > maxVotes) {
                 maxVotes = option.getVotes();
             }
         }
 
-        for(OptionViewModel ovm : optionViewModels){
+        for (OptionViewModel ovm : optionViewModels) {
             ovm.option.setMaxVotes(maxVotes);
         }
     }
 
-    private void showDetailsOfPage(){
+    private void showDetailsOfPage() {
         Intent intent = new Intent(binding.getRoot().getContext(), PageDetailActivity.class);
         intent.putExtra("title", poll.poll.getPageTitle());
         intent.putExtra("_id", poll.poll.getPageId());
@@ -149,10 +158,10 @@ public class PollViewModel {
     }
 
     private void followPage() {
-        if(binding.btnFollowPage.getText().toString().toLowerCase().equals("follow")){
+        if (binding.btnFollowPage.getText().toString().toLowerCase().equals("follow")) {
             FollowsCache.addPageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
-        }else{
+        } else {
             FollowsCache.deletePageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
         }
