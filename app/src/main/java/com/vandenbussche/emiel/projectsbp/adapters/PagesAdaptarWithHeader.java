@@ -18,7 +18,7 @@ public class PagesAdaptarWithHeader extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    private List<Page> pageList = null;
+    public List<Page> pageList = null;
 
     private Context context;
     private int headerLayout;

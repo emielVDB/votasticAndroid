@@ -1,17 +1,15 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileProfileFragment"
-    android:orientation="vertical">
+    tools:context="com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileProfileFragment">
 
-    <include layout="@layout/header_profile_profile"/>
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent" />
+</FrameLayout>
 
-</LinearLayout>

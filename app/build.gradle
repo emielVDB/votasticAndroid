@@ -57,4 +57,9 @@ dependencies {
     compile ('io.socket:socket.io-client:0.8.1') {
         exclude group: 'org.json', module: 'json'
     }
+
+    //FCM
+    compile 'com.google.firebase:firebase-messaging:10.0.0'
+
 }
+apply plugin: 'com.google.gms.google-services'

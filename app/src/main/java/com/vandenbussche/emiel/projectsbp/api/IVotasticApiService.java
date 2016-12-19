@@ -7,6 +7,7 @@ import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.SearchRequest;
 import com.vandenbussche.emiel.projectsbp.models.responses.PageResponse;
 import com.vandenbussche.emiel.projectsbp.models.responses.PollResponse;
+import com.vandenbussche.emiel.projectsbp.models.responses.ProfileResponse;
 
 import java.util.List;
 
@@ -50,4 +51,7 @@ public interface IVotasticApiService {
 
     @GET("/api/polls/pageid")
     Observable<List<PollResponse>> getPollsByPageId(@Query("pageId") String pageId, @Query("maxUploadTime") long maxUploadTime);
+
+    @GET("/api/my/profile")
+    Observable<ProfileResponse> getMyProfile();
 }

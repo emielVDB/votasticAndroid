@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
@@ -161,9 +162,11 @@ public class PollViewModel {
         if (binding.btnFollowPage.getText().toString().toLowerCase().equals("follow")) {
             FollowsCache.addPageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
+            FirebaseMessaging.getInstance().subscribeToTopic("newpollinpage_"+poll.poll.getPageId());
         } else {
             FollowsCache.deletePageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("newpollinpage_"+poll.poll.getPageId());
         }
 
         //todo: send broadcast that a follow changed

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableList;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.adapters.NotificationsAdaptar;
 import com.vandenbussche.emiel.projectsbp.adapters.PagesAdaptarWithHeader;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptar;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader;
@@ -207,5 +209,16 @@ public class MyBinders {
             }
         });
 
+    }
+
+    @BindingAdapter("notifications")
+    public static void setNotificationItems(RecyclerView recyclerView, List<String> notificationsList) {
+        if (notificationsList != null) {
+            NotificationsAdaptar adapter = new NotificationsAdaptar((ObservableList<String>)notificationsList, recyclerView.getContext());
+            recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+            recyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

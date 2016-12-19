@@ -22,6 +22,7 @@ import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.BlankFragment;
+import com.vandenbussche.emiel.projectsbp.gui.fragments.NotificationsFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileMyPollsFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.NewsFragment;
@@ -110,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mAdapter.addFragment(new NewsFragment(), "News");
         mAdapter.addFragment(new ProfileFragment(), "Profile");
-        mAdapter.addFragment(BlankFragment.newInstance("partners", "tof"), "Notifications");
+        mAdapter.addFragment(new NotificationsFragment(), "Notifications");
         viewPager.setAdapter(mAdapter);
         viewPager.addOnPageChangeListener(new ViewPagerListener());
     }
