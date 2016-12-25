@@ -211,10 +211,15 @@ public class MyBinders {
 
     }
 
-    @BindingAdapter("notifications")
-    public static void setNotificationItems(RecyclerView recyclerView, List<String> notificationsList) {
+    @BindingAdapter({"notifications", "listener"})
+    public static void setNotificationItems(RecyclerView recyclerView, List<String> notificationsList,
+                                            NotificationsAdaptar.NewNotificationsNeededListener listener) {
         if (notificationsList != null) {
-            NotificationsAdaptar adapter = new NotificationsAdaptar((ObservableList<String>)notificationsList, recyclerView.getContext());
+            NotificationsAdaptar adapter = new NotificationsAdaptar(
+                    (ObservableList<String>)notificationsList,
+                    recyclerView.getContext(),
+                    listener
+                    );
             recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
             recyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
             recyclerView.setAdapter(adapter);

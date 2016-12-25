@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.vandenbussche.emiel.projectsbp.DoneListener;
 import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
 import com.vandenbussche.emiel.projectsbp.models.Follow;
@@ -34,6 +35,7 @@ public class FollowsCache {
     }
 
     public static void addPageId(final Context context, String pageId){
+        FirebaseMessaging.getInstance().subscribeToTopic("newpollinpage_"+pageId);
         final Follow follow = new Follow();
         follow.setPageId(pageId);
         follow.setFlag(Follow.Flags.UPLOAD_ADD);
@@ -80,6 +82,9 @@ public class FollowsCache {
                     @Override
                     public void call(final List<Follow> follows) {
                         FollowsCache.follows = follows;
+                        for (Follow followItem : follows) {
+                            FirebaseMessaging.getInstance().subscribeToTopic("newpollinpage_"+followItem.getPageId());
+                        }
                         listener.done();
                     }
                 });
@@ -97,6 +102,7 @@ public class FollowsCache {
     }
 
     public static void deletePageId(final Context context, final String pageId) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("newpollinpage_"+pageId);
         Follow follow= null;
         for(Follow followItem : getFollows()){
             if(followItem.getPageId().equals(pageId)) follow = followItem;

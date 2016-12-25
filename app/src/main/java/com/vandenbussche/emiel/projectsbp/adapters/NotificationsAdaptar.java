@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.models.Poll;
 
 import java.util.List;
 
@@ -18,15 +19,16 @@ import java.util.List;
  * Created by Stijn on 2/10/2016.
  */
 public class NotificationsAdaptar extends RecyclerView.Adapter<NotificationsAdaptar.Viewholder>{
-
-
     private ObservableList<String> notificationList = null;
+    private int maxPos = 0;
+    private NewNotificationsNeededListener newNotificationsNeededListener;
 
     private Context context;
 
-    public NotificationsAdaptar(ObservableList<String> notificationList, Context context) {
+    public NotificationsAdaptar(ObservableList<String> notificationList, Context context, NewNotificationsNeededListener newNotificationsNeededListener) {
         this.notificationList = notificationList;
         this.context = context;     //extra erbij gekomen om activity te kunnen starten vanuit viewholder
+        this.newNotificationsNeededListener = newNotificationsNeededListener;
         notificationList.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<String>>() {
             @Override
             public void onChanged(ObservableList<String> strings) {
@@ -67,7 +69,12 @@ public class NotificationsAdaptar extends RecyclerView.Adapter<NotificationsAdap
         String notification= notificationList.get(position);
         holder.lblMessage.setText(notification);
 
-
+        if(newNotificationsNeededListener != null) {
+            if (position >= this.notificationList.size() - 1 && maxPos < position) {
+                maxPos = position;
+                newNotificationsNeededListener.getNewNotiffications();
+            }
+        }
     }
 
     @Override
@@ -86,5 +93,7 @@ public class NotificationsAdaptar extends RecyclerView.Adapter<NotificationsAdap
     }
 
 
-
+    public interface NewNotificationsNeededListener {
+        public void getNewNotiffications();
+    }
 }

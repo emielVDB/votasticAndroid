@@ -14,7 +14,7 @@ public class Contract {
     included automatically with a provider; the provider's developer has to define them and then make them available to other developers.
     */
 
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = 10;
     public static final String DATABASE_NAME = "database.db";
 
     public interface PollsColumns extends BaseColumns {
@@ -42,6 +42,11 @@ public class Contract {
         public static final String TABLE_NAME = "follows";
         public static final String COLUMN_PAGE_ID = "page_id";
         public static final String COLUMN_FLAG= "flag";
+    }
+
+    public interface NotificationsColumns extends BaseColumns {
+        public static final String TABLE_NAME = "notifications";
+        public static final String COLUMN_MESSAGE = "message";
     }
 
     public static abstract class PollsDB implements PollsColumns {
@@ -85,6 +90,18 @@ public class Contract {
                 + _ID + " integer primary key autoincrement, "
                 + COLUMN_PAGE_ID + " text not null, "
                 + COLUMN_FLAG + " integer not null "
+                + ");";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+    
+    public static abstract class NotificationsDB implements NotificationsColumns {
+
+        public static final String CREATE_TABLE = "create table "
+                + TABLE_NAME + "( "
+                + _ID + " integer primary key autoincrement, "
+                + COLUMN_MESSAGE + " text not null"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

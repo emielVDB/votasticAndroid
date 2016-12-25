@@ -35,14 +35,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //drop vorige table, create nieuwe
-        db.execSQL(Contract.PollsDB.DELETE_TABLE);
-        db.execSQL(Contract.PagesDB.DELETE_TABLE);
-        db.execSQL(Contract.FollowsDB.DELETE_TABLE);
+        if(oldVersion == 9 && newVersion == 10){
+            db.execSQL(Contract.NotificationsDB.CREATE_TABLE);
+        }else{
 
-        db.execSQL(Contract.PollsDB.CREATE_TABLE);
-        db.execSQL(Contract.PagesDB.CREATE_TABLE);
-        db.execSQL(Contract.FollowsDB.CREATE_TABLE);
+            //drop vorige table, create nieuwe
+            db.execSQL(Contract.PollsDB.DELETE_TABLE);
+            db.execSQL(Contract.PagesDB.DELETE_TABLE);
+            db.execSQL(Contract.FollowsDB.DELETE_TABLE);
+            db.execSQL(Contract.NotificationsDB.DELETE_TABLE);
+
+            db.execSQL(Contract.PollsDB.CREATE_TABLE);
+            db.execSQL(Contract.PagesDB.CREATE_TABLE);
+            db.execSQL(Contract.FollowsDB.CREATE_TABLE);
+            db.execSQL(Contract.NotificationsDB.CREATE_TABLE);
+        }
+
+
 
 
     }

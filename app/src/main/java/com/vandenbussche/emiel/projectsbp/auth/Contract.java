@@ -4,7 +4,7 @@ package com.vandenbussche.emiel.projectsbp.auth;
  * Created by Stijn on 15/10/2016.
  */
 public class Contract {
-    public static final String SERVER_HOST = "172.30.252.63";
+    public static final String SERVER_HOST = "192.168.0.135";
     public static final String BASEURL = "http://"+SERVER_HOST+":3000";
     public static final String SOCKETURL = "http://"+SERVER_HOST+":8080";
 

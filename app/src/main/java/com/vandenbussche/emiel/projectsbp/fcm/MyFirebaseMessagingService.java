@@ -18,9 +18,17 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
+import com.vandenbussche.emiel.projectsbp.database.FollowsAccess;
+import com.vandenbussche.emiel.projectsbp.database.NotificationsAccess;
 import com.vandenbussche.emiel.projectsbp.gui.activities.HomeActivity;
+import com.vandenbussche.emiel.projectsbp.models.Follow;
 
 import java.util.List;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
@@ -42,6 +50,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }else{
                 sendNotification(remoteMessage.getData().get("message"));
             }
+
+            NotificationsAccess.insert(this, NotificationsAccess.notificationToContentValuesList(remoteMessage.getData().get("message")))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+
+                        }
+                    });
         }
     }
 
@@ -54,7 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.logo_notification)
                 .setContentTitle("Votastic")
                 .setContentText(messageBody)
                 .setAutoCancel(true)

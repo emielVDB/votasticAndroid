@@ -162,11 +162,9 @@ public class PollViewModel {
         if (binding.btnFollowPage.getText().toString().toLowerCase().equals("follow")) {
             FollowsCache.addPageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
-            FirebaseMessaging.getInstance().subscribeToTopic("newpollinpage_"+poll.poll.getPageId());
         } else {
             FollowsCache.deletePageId(binding.getRoot().getContext(), poll.poll.getPageId());
             poll.notifyPropertyChanged(BR.following);
-            FirebaseMessaging.getInstance().unsubscribeFromTopic("newpollinpage_"+poll.poll.getPageId());
         }
 
         //todo: send broadcast that a follow changed

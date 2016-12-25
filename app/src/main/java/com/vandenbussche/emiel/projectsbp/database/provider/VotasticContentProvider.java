@@ -30,10 +30,12 @@ public class VotasticContentProvider extends ContentProvider {
     private static final int PAGES = 3;
     private static final int PAGE_ID = 4;
     private static final int FOLLOWS = 5;
+    private static final int NOTIFICATIONS = 6;
 
     private static HashMap<String, String> POLLS_PROJECTION_MAP;
     private static HashMap<String, String> PAGES_PROJECTION_MAP;
     private static HashMap<String, String> FOLLOWS_PROJECTION_MAP;
+    private static HashMap<String, String> NOTIFICATIONS_PROJECTION_MAP;
 
     private static final UriMatcher uriMatcher;
 
@@ -44,6 +46,7 @@ public class VotasticContentProvider extends ContentProvider {
         uriMatcher.addURI(Contract.AUTHORITY, "pages", PAGES);
         uriMatcher.addURI(Contract.AUTHORITY, "pages/#", PAGE_ID);
         uriMatcher.addURI(Contract.AUTHORITY, "follows", FOLLOWS);
+        uriMatcher.addURI(Contract.AUTHORITY, "notifications", NOTIFICATIONS);
     }
 
     @Override
@@ -73,15 +76,21 @@ public class VotasticContentProvider extends ContentProvider {
         FOLLOWS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_PAGE_ID, com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_PAGE_ID);
         FOLLOWS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.FollowsColumns.COLUMN_FLAG);
 
+        NOTIFICATIONS_PROJECTION_MAP = new HashMap<>();
+        NOTIFICATIONS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns._ID);
+        NOTIFICATIONS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns.COLUMN_MESSAGE, com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns.COLUMN_MESSAGE);
+      
         return true;
     }
 
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        String limitString = null;
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         switch (uriMatcher.match(uri)) {
             case POLLS:
+                if(sortOrder == null) sortOrder = com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_UPLOAD_TIME+" desc";
                 queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.TABLE_NAME);
                 queryBuilder.setProjectionMap(POLLS_PROJECTION_MAP);
                 break;
@@ -92,6 +101,11 @@ public class VotasticContentProvider extends ContentProvider {
             case FOLLOWS:
                 queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME);
                 queryBuilder.setProjectionMap(FOLLOWS_PROJECTION_MAP);
+                break;
+            case NOTIFICATIONS:
+                queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsDB.TABLE_NAME);
+                queryBuilder.setProjectionMap(NOTIFICATIONS_PROJECTION_MAP);
+                limitString = "0, 5";
                 break;
 
             case POLL_ID:
@@ -128,7 +142,8 @@ public class VotasticContentProvider extends ContentProvider {
                 selectionArgs,
                 null,
                 null,
-                null
+                sortOrder,
+                limitString
         );
 
         data.getCount();
@@ -151,6 +166,8 @@ public class VotasticContentProvider extends ContentProvider {
                 return Contract.PAGES_ITEM_CONTENT_TYPE;
             case FOLLOWS:
                 return Contract.FOLLOWS_CONTENT_TYPE;
+            case NOTIFICATIONS:
+                return Contract.NOTIFICATIONS_CONTENT_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -188,6 +205,15 @@ public class VotasticContentProvider extends ContentProvider {
                 Uri followsItemUri = ContentUris.withAppendedId(Contract.FOLLOWS_ITEM_URI, newRowId);
                 getContext().getContentResolver().notifyChange(followsItemUri, null);
                 return followsItemUri;
+
+            case NOTIFICATIONS:
+                newRowId = db.insert(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsDB.TABLE_NAME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                Uri notificationsItemUri = ContentUris.withAppendedId(Contract.NOTIFICATIONS_ITEM_URI, newRowId);
+                getContext().getContentResolver().notifyChange(notificationsItemUri, null);
+                return notificationsItemUri;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
