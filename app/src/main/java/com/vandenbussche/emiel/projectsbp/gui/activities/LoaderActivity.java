@@ -3,14 +3,11 @@ package com.vandenbussche.emiel.projectsbp.gui.activities;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.vandenbussche.emiel.projectsbp.DoneListener;
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.VotasticApplication;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.FollowsCache;
 
@@ -31,7 +28,8 @@ public class LoaderActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(AuthHelper.isUserLoggedIn(this)) {
-            //todo: start and wait to finish of syncing
+            VotasticApplication.initConnection(getApplicationContext());
+
             ContentResolver.setSyncAutomatically(AuthHelper.getAccount(this), AUTHORITY, true);
             FollowsCache.loadAllFollows(this, new DoneListener() {
                 @Override
@@ -40,8 +38,6 @@ public class LoaderActivity extends AppCompatActivity {
                     if(followsLoaded) toHomeActivity(); //todo: &&appSynced
                 }
             });
-
-
 
         }else{
             Intent intent = new Intent(this, LoginActivity.class);

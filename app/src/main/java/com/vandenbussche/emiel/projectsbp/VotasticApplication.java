@@ -35,13 +35,14 @@ public class VotasticApplication extends Application{
         VotasticApplication.connection = connection;
     }
 
-    public void initConnection(){
-        AccountManager accountManager = AccountManager.get(getApplicationContext());
+    public static void initConnection(Context context){
+        if(connection != null) return;
+        AccountManager accountManager = AccountManager.get(context);
         Account[] accounts = accountManager.getAccountsByType(Contract.ACCOUNT_TYPE);
 
         if (accounts.length != 0) {
-            String token = AuthHelper.getCurrentAccessToken(getApplicationContext(), accounts[0]);
-            new ConnectSocketTask().execute(token);
+            String token = AuthHelper.getCurrentAccessToken(context, accounts[0]);
+            new VotasticApplication.ConnectSocketTask().execute(token);
         }
     }
 
@@ -49,7 +50,7 @@ public class VotasticApplication extends Application{
     public void onCreate() {
         super.onCreate();
 
-       initConnection();
+       initConnection(getApplicationContext());
     }
 
     @Override
@@ -63,7 +64,7 @@ public class VotasticApplication extends Application{
 
     }
 
-    private class ConnectSocketTask extends AsyncTask<String, Void, Socket> {
+    public static class ConnectSocketTask extends AsyncTask<String, Void, Socket> {
 
         @Override
         protected Socket doInBackground(String... params) {

@@ -2,8 +2,10 @@ package com.vandenbussche.emiel.projectsbp.gui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -45,7 +47,14 @@ public class RandomPollsActivity extends AppCompatActivity implements Incrementa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView)findViewById(R.id.pollsRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            //Do some stuff
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false));
+
+        }else{
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
+
         recyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
 
         searchView = (SearchView)findViewById(R.id.search);

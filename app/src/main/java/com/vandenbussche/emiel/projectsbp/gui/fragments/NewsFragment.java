@@ -1,10 +1,12 @@
 package com.vandenbussche.emiel.projectsbp.gui.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +39,13 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_news, container, false);
-        binding.pollsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            //Do some stuff
+            binding.pollsRecyclerView.setLayoutManager(new GridLayoutManager(this.getActivity(), 2));
+
+        }else{
+            binding.pollsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        }
         binding.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
         newsFragmentViewModel = new NewsFragmentViewModel(binding);
         newsFragmentViewModel.loadPolls();

@@ -57,11 +57,10 @@ public class PollViewModel {
 
     public void setPoll(Poll poll) {
         this.poll = new PollBinderModel(poll);
-        binding.setPoll(this.poll);
-        binding.executePendingBindings();
 
         optionViewModels = new ArrayList<>();
-
+//        binding.lblQuestion.setText("hallooooo fak");
+        optionsLinearLayout.setVisibility(View.VISIBLE);
         optionsLinearLayout.removeAllViews();
         int optionLoopnr = 0;
         for (Option option : poll.getOptions()) {
@@ -80,6 +79,9 @@ public class PollViewModel {
         updateMaximumVoteInOptions();
 
         startUpdating();
+
+        binding.setPoll(this.poll);
+        binding.executePendingBindings();
     }
 
 

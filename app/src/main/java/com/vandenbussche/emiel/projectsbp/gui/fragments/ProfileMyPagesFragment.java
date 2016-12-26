@@ -2,9 +2,11 @@ package com.vandenbussche.emiel.projectsbp.gui.fragments;
 
 
 
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +37,13 @@ public class ProfileMyPagesFragment extends Fragment {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile_my_pages, container, false);
-        binding.pagesRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            //Do some stuff
+            binding.pagesRecyclerView.setLayoutManager(new GridLayoutManager(this.getActivity(), 2));
+
+        }else{
+            binding.pagesRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        }
         binding.pagesRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
         newsFragmentViewModel = new ProfileMyPagesFragmentViewModel(binding, getContext(), getFragmentManager());
         newsFragmentViewModel.loadPages();
