@@ -131,10 +131,13 @@ public class PollViewModel {
                         poll.poll.setNeedsUpdate(false);
 
                         //update the votes
-                        poll.poll.setOptions(pollR.getOptions());
+                        int optionLoopnr = 0;
+                        for (Option optionItem : poll.poll.getOptions()) {
+                            optionItem.setVotes(pollR.getOptions().get(optionLoopnr).getVotes());
+                        }
                         updateMaximumVoteInOptions();
 
-                        int optionLoopnr = 0;
+                        optionLoopnr = 0;
                         for (Option option : pollR.getOptions()) {
                             optionViewModels.get(optionLoopnr).option.getOption().setVotes(option.getVotes());
                             if (pollR.getChoiceIndex() != -1) {

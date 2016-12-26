@@ -95,12 +95,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_settings){
-            Account account = AuthHelper.getAccount(this);
-            Bundle settingsBundle = new Bundle();
-            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-            this.getContentResolver().requestSync(account,
-                    Contract.AUTHORITY, settingsBundle);
+//            Account account = AuthHelper.getAccount(this);
+//            Bundle settingsBundle = new Bundle();
+//            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+//            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+//            this.getContentResolver().requestSync(account,
+//                    Contract.AUTHORITY, settingsBundle);
+            startActivity(new Intent(this, SettingsActivity.class));
         }else if(item.getItemId() == R.id.action_search){
             startActivity(new Intent(this, RandomPollsActivity.class));
         }

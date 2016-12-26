@@ -9,8 +9,10 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
 import com.vandenbussche.emiel.projectsbp.database.FollowsAccess;
 import com.vandenbussche.emiel.projectsbp.database.NotificationsAccess;
 import com.vandenbussche.emiel.projectsbp.gui.activities.HomeActivity;
+import com.vandenbussche.emiel.projectsbp.gui.activities.LoaderActivity;
 import com.vandenbussche.emiel.projectsbp.models.Follow;
 
 import java.util.List;
@@ -48,7 +51,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("message", remoteMessage.getData().get("message"));
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }else{
-                sendNotification(remoteMessage.getData().get("message"));
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean makeNoti = prefs.getBoolean("notifications_new_poll", true);
+                if(makeNoti) sendNotification(remoteMessage.getData().get("message"), prefs);
             }
 
             NotificationsAccess.insert(this, NotificationsAccess.notificationToContentValuesList(remoteMessage.getData().get("message")))
@@ -64,8 +69,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
 
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, HomeActivity.class);
+    private void sendNotification(String messageBody, SharedPreferences prefs) {
+        boolean vibrate = prefs.getBoolean("notifications_new_poll_vibrate", false);
+        long[] lVibrate = new long[]{ 1000, 1000, 1000 };
+        if(!vibrate) lVibrate = new long[]{};
+        Intent intent = new Intent(this, LoaderActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -77,7 +85,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setVibrate(lVibrate);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
