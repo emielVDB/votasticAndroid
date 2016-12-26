@@ -53,6 +53,10 @@ public class PageDetailActivityViewModel extends BaseObservable implements Polls
                         if(polls.size() == 0){
                             loadPollsFromServer(pageId);
                             return;
+                        }else{
+                            for (Poll pollItem : polls) {
+                                pollItem.setNeedsUpdate(true);
+                            }
                         }
 
                         PollsAdaptarWithHeader adapter = new PollsAdaptarWithHeader(polls, context, PageDetailActivityViewModel.this, R.layout.header_page_detail);
