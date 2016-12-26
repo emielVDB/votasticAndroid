@@ -34,6 +34,9 @@ public interface IVotasticApiService {
     @POST("/api/my/pages")
     Observable<PageResponse> saveNewPage(@Body PageRequest pagerequest);
 
+    @GET("/api/polls/id")
+    Observable<PollResponse> getPollById(@Query("pollId") String pageId);
+
     @GET("/api/polls/random")
     Observable<List<PollResponse>> getRandomPolls();
 

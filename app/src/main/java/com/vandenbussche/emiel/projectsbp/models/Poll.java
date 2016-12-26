@@ -20,6 +20,7 @@ public class Poll extends BaseObservable{
     private long uploadTime;
     private String pageId;
     private String pageTitle;
+    private boolean needsUpdate;
 
     public String get_id() {
         return _id;
@@ -115,6 +116,14 @@ public class Poll extends BaseObservable{
 
     public void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
+    }
+
+    public boolean isNeedsUpdate() {
+        return needsUpdate;
+    }
+
+    public void setNeedsUpdate(boolean needsUpdate) {
+        this.needsUpdate = needsUpdate;
     }
 
     public static class Flags {

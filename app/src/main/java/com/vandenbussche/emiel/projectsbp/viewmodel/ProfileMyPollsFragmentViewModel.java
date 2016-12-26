@@ -60,6 +60,9 @@ public class ProfileMyPollsFragmentViewModel extends BaseObservable implements P
                 .subscribe(new Action1<List<Poll>>() {
                     @Override
                     public void call(List<Poll> polls) {
+                        for(Poll pollLoopItem : polls){
+                            pollLoopItem.setNeedsUpdate(true);
+                        }
                         PollList pollList = new PollList();
                         pollList.setData(polls);
                         binding.setAdapterListener(ProfileMyPollsFragmentViewModel.this);

@@ -129,15 +129,15 @@ public class PollsAccess {
      */
 
     //todo: content provider gebruiken
-    public static Observable<Long> update(Context context, String table, String[] columns, String[] columnValues, String key, String value) {
+    public static Observable<Long> update(Context context, String[] columns, String[] columnValues, String key, String value) {
         DatabaseHelper connection = DatabaseHelper.getInstance(context);
         SQLiteDatabase db = connection.getWritableDatabase();
 
-        return makeObservable(update(db, table, columns, columnValues, key, value))
+        return makeObservable(update(db, columns, columnValues, key, value))
                 .subscribeOn(Schedulers.computation());
     }
 
-    private static Callable<Long> update(final SQLiteDatabase db, final String table, final String[] columns, final Object[] columnValues,
+    private static Callable<Long> update(final SQLiteDatabase db, final String[] columns, final Object[] columnValues,
                                          final String key, final String value) {
         return new Callable<Long>() {
             @Override
@@ -164,7 +164,7 @@ public class PollsAccess {
                     }
 
                     changedRows = db.update(
-                            table,
+                            Contract.PollsDB.TABLE_NAME,
                             values,
                             key + " = ?",
                             new String[]{value}

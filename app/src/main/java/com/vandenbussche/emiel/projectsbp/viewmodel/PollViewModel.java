@@ -12,19 +12,27 @@ import com.google.gson.Gson;
 import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.VotasticApplication;
+import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
 import com.vandenbussche.emiel.projectsbp.binders.models.PollBinderModel;
+import com.vandenbussche.emiel.projectsbp.database.Contract;
 import com.vandenbussche.emiel.projectsbp.database.FollowsCache;
+import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
 import com.vandenbussche.emiel.projectsbp.databinding.RowPollBinding;
 import com.vandenbussche.emiel.projectsbp.gui.activities.PageDetailActivity;
 import com.vandenbussche.emiel.projectsbp.models.Option;
+import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 import com.vandenbussche.emiel.projectsbp.models.requests.VoteRequest;
+import com.vandenbussche.emiel.projectsbp.models.responses.PollResponse;
 import com.vandenbussche.emiel.projectsbp.models.responses.PollUpdateResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.socket.emitter.Emitter;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by emielPC on 11/11/16.
@@ -82,6 +90,10 @@ public class PollViewModel {
 
         binding.setPoll(this.poll);
         binding.executePendingBindings();
+
+        if(this.poll.poll.isNeedsUpdate()){
+            reloadData();
+        }
     }
 
 
@@ -109,6 +121,32 @@ public class PollViewModel {
     }
 
     public void reloadData() {
+        ApiHelper.getApiService(binding.getRoot().getContext()).getPollById(poll.poll.get_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<PollResponse>() {
+                    @Override
+                    public void call(PollResponse pollResponse) {
+                        Poll pollR = pollResponse.toPoll();
+                        poll.poll.setNeedsUpdate(false);
+
+                        //update the votes
+                        poll.poll.setOptions(pollR.getOptions());
+                        updateMaximumVoteInOptions();
+
+                        int optionLoopnr = 0;
+                        for (Option option : pollR.getOptions()) {
+                            optionViewModels.get(optionLoopnr).option.getOption().setVotes(option.getVotes());
+                            if (pollR.getChoiceIndex() != -1) {
+                                int hasVote = pollR.getChoiceIndex() == optionLoopnr? 1 : 0;
+                                optionViewModels.get(optionLoopnr).option.setHasVote(hasVote);
+                            }
+
+                            optionLoopnr++;
+                        }
+
+                    }
+                });
 
     }
 
@@ -122,7 +160,20 @@ public class PollViewModel {
                 optionVM.option.setNewNess(1);
             }
         }
+        poll.poll.setChoiceIndex(index);
         updateMaximumVoteInOptions();
+
+        PollsAccess.update(binding.getRoot().getContext(),
+                new String[]{Contract.PollsDB.COLUMN_CHOICE_INDEX},
+                new String[]{index+""}, Contract.PollsDB._ID, poll.poll.get_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+
+                    }
+                });
     }
 
     public void optionClicked(Option option) {
