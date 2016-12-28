@@ -1,6 +1,5 @@
 package com.vandenbussche.emiel.projectsbp.gui.activities;
 
-import android.databinding.BaseObservable;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,43 +10,34 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
-import com.vandenbussche.emiel.projectsbp.database.Contract;
-import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
 import com.vandenbussche.emiel.projectsbp.databinding.ActivityPageDetailBinding;
-import com.vandenbussche.emiel.projectsbp.databinding.ContentPageDetailBinding;
+import com.vandenbussche.emiel.projectsbp.databinding.ActivityPollDetailBinding;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
-import com.vandenbussche.emiel.projectsbp.models.PollList;
 import com.vandenbussche.emiel.projectsbp.viewmodel.PageDetailActivityViewModel;
-import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPollsFragmentViewModel;
+import com.vandenbussche.emiel.projectsbp.viewmodel.PollDetailActivityViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-
-public class PageDetailActivity extends AppCompatActivity {
-    PageDetailActivityViewModel pageDetailActivityViewModel;
-
+public class PollDetailActivity extends AppCompatActivity {
+    PollDetailActivityViewModel pollDetailActivityViewModel;
+    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityPageDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_page_detail);
-        binding.content.pollsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        binding.content.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
-        pageDetailActivityViewModel = new PageDetailActivityViewModel(binding, this);
+
+        ActivityPollDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_poll_detail);
+        binding.content.reactionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.content.reactionsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
 
         if(getIntent() != null){
-            setTitle(getIntent().getStringExtra("title"));
-            pageDetailActivityViewModel.loadPolls(getIntent().getStringExtra("_id"));
+            setTitle("Poll -live-");
+            Poll poll = (Poll)(getIntent().getSerializableExtra("poll"));
+            pollDetailActivityViewModel = new PollDetailActivityViewModel(binding, this, poll);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
     @Override

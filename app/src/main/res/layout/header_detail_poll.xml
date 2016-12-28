@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="poll"
+            type="com.vandenbussche.emiel.projectsbp.binders.models.PollBinderModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/default_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:visibility="@{poll == null || poll.poll.pageId == null? View.GONE : View.VISIBLE}">
+
+            <Button
+                android:id="@+id/btnPageDetail"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:paddingStart="0dp"
+                android:text="@{poll.poll.pageTitle}"
+                android:textSize="12sp"
+                android:visibility="@{poll == null || poll.poll.pageId == null? View.GONE : View.VISIBLE}" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="@{poll == null || poll.poll.pageId == null? View.GONE : View.VISIBLE}" />
+
+            <Button
+                android:id="@+id/btnFollowPage"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{poll.following? @string/unfollow : @string/follow}"
+                android:visibility="@{poll == null || poll.poll.pageId == null? View.GONE : View.VISIBLE}" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/half_margin"
+            android:background="@color/lightGray"
+            android:visibility="@{poll == null || poll.poll.pageId == null? View.GONE : View.VISIBLE}" />
+
+        <TextView
+            android:id="@+id/lblQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{poll.poll.question}"
+            android:textSize="@dimen/title_size" />
+
+        <LinearLayout
+            android:id="@+id/optionsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="Reactions:" />
+    </LinearLayout>
+</layout>
+

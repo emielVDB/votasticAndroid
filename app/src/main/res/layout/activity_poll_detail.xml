@@ -4,21 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
-            name="pollList"
-            type="com.vandenbussche.emiel.projectsbp.models.PollList" />
-
-        <variable
-            name="adapterListener"
-            type="com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader.PollsAdapterWithHeaderListener" />
+            name="dataLoaded"
+            type="boolean"/>
     </data>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context="com.vandenbussche.emiel.projectsbp.gui.activities.PageDetailActivity">
+        tools:context="com.vandenbussche.emiel.projectsbp.gui.activities.PollDetailActivity">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -34,11 +29,11 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include
+        <include layout="@layout/content_poll_detail"
             android:id="@+id/content"
-            layout="@layout/content_page_detail"
-            app:pollList="@{pollList}"
-            app:adapterListener="@{adapterListener}"/>
+            app:dataLoaded="@{dataLoaded}"
+            />
 
     </android.support.design.widget.CoordinatorLayout>
+
 </layout>

@@ -126,6 +126,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.vandenbussche.emiel.projectsbp.gui.activities.HomeActivity" />
         </activity>
+        <activity
+            android:name=".gui.activities.PollDetailActivity"
+            android:label="@string/title_activity_poll_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

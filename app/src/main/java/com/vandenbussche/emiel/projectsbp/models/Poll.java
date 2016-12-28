@@ -2,12 +2,13 @@ package com.vandenbussche.emiel.projectsbp.models;
 
 import android.databinding.BaseObservable;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by emielPC on 10/11/16.
  */
-public class Poll extends BaseObservable{
+public class Poll extends BaseObservable implements Serializable{
     private String _id;
     private String question;
     private List<String> tags;

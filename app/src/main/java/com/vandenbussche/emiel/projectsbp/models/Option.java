@@ -6,10 +6,12 @@ import android.databinding.Bindable;
 
 import com.android.databinding.library.baseAdapters.BR;
 
+import java.io.Serializable;
+
 /**
  * Created by emielPC on 10/11/16.
  */
-public class Option extends BaseObservable{
+public class Option extends BaseObservable implements Serializable{
     private int votes;
     private String content;
 

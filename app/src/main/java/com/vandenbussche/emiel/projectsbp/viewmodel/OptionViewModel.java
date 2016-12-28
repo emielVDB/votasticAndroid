@@ -12,18 +12,19 @@ import com.vandenbussche.emiel.projectsbp.databinding.RowOptionBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.RowPollBinding;
 import com.vandenbussche.emiel.projectsbp.models.Option;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.PollBindable;
 
 /**
  * Created by emielPC on 11/11/16.
  */
 public class OptionViewModel implements View.OnClickListener{
-    PollViewModel pollViewModel;
+    PollBindable pollViewModel;
 
     RowOptionBinding binding;
     public OptionBinderModel option;
 
 
-    public OptionViewModel(ViewGroup parent, PollViewModel pollViewModel){
+    public OptionViewModel(ViewGroup parent, PollBindable pollViewModel){
         binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_option, parent, false);
         this.pollViewModel = pollViewModel;
     }
