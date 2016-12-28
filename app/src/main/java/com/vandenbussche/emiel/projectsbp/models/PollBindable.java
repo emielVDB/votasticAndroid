@@ -36,8 +36,10 @@ public abstract class PollBindable {
 
     public List<OptionViewModel> optionViewModels;
 
-
     public void setPoll(Poll poll) {
+        setPoll(poll, true);
+    }
+    public void setPoll(Poll poll, boolean animate){
         this.poll = new PollBinderModel(poll);
 
         optionViewModels = new ArrayList<>();
@@ -50,7 +52,12 @@ public abstract class PollBindable {
             ovm.setOption(option);
             if (poll.getChoiceIndex() != -1) {
                 int hasVote = poll.getChoiceIndex() == optionLoopnr? 1 : 0;
-                ovm.option.setHasVote(hasVote);
+
+                if(animate) {
+                    ovm.option.setHasVote(hasVote);
+                }else{
+                    ovm.option.setHasVoteNoAnimation(hasVote);
+                }
             }
 
             optionsLinearLayout.addView(ovm.getRoot());
@@ -69,6 +76,7 @@ public abstract class PollBindable {
             reloadData();
         }
     }
+
 
 
     public View getRoot() {

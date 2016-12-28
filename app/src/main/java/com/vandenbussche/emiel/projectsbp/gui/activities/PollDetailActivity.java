@@ -26,13 +26,14 @@ public class PollDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         ActivityPollDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_poll_detail);
-        binding.content.reactionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        binding.content.reactionsRecyclerView.setLayoutManager(linearLayoutManager);
         binding.content.reactionsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
 
         if(getIntent() != null){
             setTitle("Poll -live-");
             Poll poll = (Poll)(getIntent().getSerializableExtra("poll"));
-            pollDetailActivityViewModel = new PollDetailActivityViewModel(binding, this, poll);
+            pollDetailActivityViewModel = new PollDetailActivityViewModel(binding, this, poll, linearLayoutManager);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

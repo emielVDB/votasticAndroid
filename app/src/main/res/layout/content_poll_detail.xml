@@ -21,6 +21,26 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/reactionsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_above="@+id/sendReactionLayout"/>
+
+        <LinearLayout
+            android:id="@+id/sendReactionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
+            <EditText
+                android:id="@+id/txtReaction"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btnSendReaction"
+                android:text="@string/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
     </RelativeLayout>
 </layout>

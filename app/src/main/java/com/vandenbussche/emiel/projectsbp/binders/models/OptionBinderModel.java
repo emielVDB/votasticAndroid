@@ -55,6 +55,13 @@ public class OptionBinderModel extends BaseObservable{
         new Thread(run).start();
     }
 
+    public void setHasVoteNoAnimation(int hasVote){
+        if(this.hasVote == hasVote) return;
+        this.hasVote = hasVote;
+        setShowPercentage(100);
+        notifyPropertyChanged(BR.hasVote);
+    }
+
     Runnable run = new Runnable() {
         @Override
         public void run() {

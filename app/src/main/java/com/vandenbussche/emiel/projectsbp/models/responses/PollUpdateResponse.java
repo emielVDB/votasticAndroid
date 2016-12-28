@@ -7,6 +7,7 @@ package com.vandenbussche.emiel.projectsbp.models.responses;
 public class PollUpdateResponse {
     String kind;
     VoteResponse  voteResponse;
+    AddReactionResponse addReactionResponse;
 
     public VoteResponse getVoteResponse() {
         return voteResponse;
@@ -16,6 +17,14 @@ public class PollUpdateResponse {
         this.voteResponse = voteResponse;
     }
 
+    public AddReactionResponse getAddReactionResponse() {
+        return addReactionResponse;
+    }
+
+    public void setAddReactionResponse(AddReactionResponse addReactionResponse) {
+        this.addReactionResponse = addReactionResponse;
+    }
+
     public String getKind() {
         return kind;
     }
@@ -23,4 +32,6 @@ public class PollUpdateResponse {
     public void setKind(String kind) {
         this.kind = kind;
     }
+
+
 }

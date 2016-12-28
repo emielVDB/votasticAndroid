@@ -1,17 +1,14 @@
-package com.vandenbussche.emiel.projectsbp.models;
+package com.vandenbussche.emiel.projectsbp.models.responses;
+
+import com.vandenbussche.emiel.projectsbp.models.Reaction;
 
 /**
- * Created by emielPC on 11/11/16.
+ * Created by emielPC on 28/12/16.
  */
-public class Reaction {
+
+public class AddReactionResponse {
     String content;
     long uploadTime;
-
-    public Reaction(){}
-    public Reaction(String content, Long time) {
-        this.content = content;
-        this.uploadTime = time;
-    }
 
     public String getContent() {
         return content;
@@ -27,5 +24,9 @@ public class Reaction {
 
     public void setUploadTime(long uploadTime) {
         this.uploadTime = uploadTime;
+    }
+
+    public Reaction toReaction(){
+        return new Reaction(content, uploadTime);
     }
 }
