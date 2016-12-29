@@ -14,7 +14,7 @@ import java.util.List;
 
 public class IncrementalReactionsAdaptarWithHeader extends ReactionsAdaptarWithHeader {
     NewReactionsNeededListener newReactionsNeededListener;
-    private int maxPos = 0;
+    private int maxPos = -1;
     public IncrementalReactionsAdaptarWithHeader(List<Reaction> reactionList, Context context, ReactionsAdapterWithHeaderListener listener, NewReactionsNeededListener newReactionsNeededListener, int headerLayout) {
         super(reactionList, context, listener, headerLayout);
         this.newReactionsNeededListener = newReactionsNeededListener;
@@ -26,7 +26,11 @@ public class IncrementalReactionsAdaptarWithHeader extends ReactionsAdaptarWithH
         if(newReactionsNeededListener != null) {
             if (position >= this.reactionList.size() - 1 && maxPos < position) {
                 maxPos = position;
-                newReactionsNeededListener.getNewReactions(reactionList.get(reactionList.size() - 1));
+                if(reactionList != null && reactionList.size() > 0) {
+                    newReactionsNeededListener.getNewReactions(reactionList.get(reactionList.size() - 1));
+                }else{
+                    newReactionsNeededListener.getNewReactions(null);
+                }
             }
         }
     }

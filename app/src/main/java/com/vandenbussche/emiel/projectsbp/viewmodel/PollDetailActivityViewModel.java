@@ -102,14 +102,14 @@ public class PollDetailActivityViewModel implements IncrementalReactionsAdaptarW
         binding.content.reactionsRecyclerView.setAdapter(adaptar);
     }
 
-    public void loadReactions(){
-        ApiHelper.getApiService(binding.getRoot().getContext()).getReactions(poll.get_id(), 0)
+    public void loadReactions(long maxUploadTime){
+        ApiHelper.getApiService(binding.getRoot().getContext()).getReactions(poll.get_id(), maxUploadTime)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<PollResponse>>() {
+                .subscribe(new Action1<List<Reaction>>() {
             @Override
-            public void call(List<PollResponse> pollResponses) {
-
+            public void call(List<Reaction> reactionResponseList) {
+                adaptar.addReactions(reactionResponseList);
             }
         });
 
@@ -118,7 +118,11 @@ public class PollDetailActivityViewModel implements IncrementalReactionsAdaptarW
 
     @Override
     public void getNewReactions(Reaction lastReaction) {
-
+        if(lastReaction == null){
+            loadReactions(0);
+        }else{
+            loadReactions(lastReaction.getUploadTime() - 1);
+        }
     }
 
     @Override

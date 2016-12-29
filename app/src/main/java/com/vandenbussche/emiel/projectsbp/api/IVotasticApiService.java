@@ -2,6 +2,7 @@ package com.vandenbussche.emiel.projectsbp.api;
 
 
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.Reaction;
 import com.vandenbussche.emiel.projectsbp.models.requests.PageRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.SearchRequest;
@@ -46,8 +47,8 @@ public interface IVotasticApiService {
     @GET("/api/polls/news")
     Observable<List<PollResponse>> getNewsPolls(@Query("maxUploadTime") long maxUploadTime);
 
-    @GET("/api/reactions/get")
-    Observable<List<PollResponse>> getReactions(@Query("pollId") String pollId, @Query("maxUploadTime") long maxUploadTime);
+    @GET("/api/reactions")
+    Observable<List<Reaction>> getReactions(@Query("pollId") String pollId, @Query("maxUploadTime") long maxUploadTime);
 
     @POST("/api/my/follows")
     Observable<String> addFollow(@Query("pageId") String pageId);
