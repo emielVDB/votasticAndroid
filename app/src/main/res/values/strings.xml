@@ -98,4 +98,5 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_poll_detail">PollDetailActivity</string>
     <string name="send">Send</string>
+    <string name="type_a_reaction">Type a reaction...</string>
 </resources>

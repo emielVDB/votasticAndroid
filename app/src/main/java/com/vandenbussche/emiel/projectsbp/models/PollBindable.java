@@ -111,7 +111,7 @@ public abstract class PollBindable {
                     public void call(PollResponse pollResponse) {
                         Poll pollR = pollResponse.toPoll();
                         poll.poll.setNeedsUpdate(false);
-
+                        poll.poll.setChoiceIndex(pollR.getChoiceIndex());
                         //update the votes
                         int optionLoopnr = 0;
                         for (Option optionItem : poll.poll.getOptions()) {
