@@ -34,7 +34,7 @@ public class IncrementalPollsAdaptarWithHeader extends PollsAdaptarWithHeader {
     public void addPolls(List<Poll> polls){
         int insertedIndex = this.pollList.size();
         this.pollList.addAll(polls);
-        notifyItemRangeInserted(insertedIndex , polls.size());
+        notifyItemRangeInserted(insertedIndex + 1 , polls.size());
     }
 
     public void clearItems() {

@@ -8,13 +8,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 
+import com.squareup.picasso.Picasso;
 import com.vandenbussche.emiel.projectsbp.R;
+import com.vandenbussche.emiel.projectsbp.adapters.PollImagesAdaptar;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
@@ -25,6 +31,8 @@ import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +44,23 @@ import rx.schedulers.Schedulers;
  * Created by emielPC on 16/11/16.
  */
 public class NewPollActivityViewModel {
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+
     ActivityNewPollBinding binding;
     Context context;
+    NewPollViewmodelListener listener;
 
-    public NewPollActivityViewModel(final ActivityNewPollBinding binding, Context context) {
+    PollImagesAdaptar imagesAdaptar = null;
+    ObservableList<String> images = new ObservableArrayList<>();
+
+
+    public NewPollActivityViewModel(final ActivityNewPollBinding binding, Context context, NewPollViewmodelListener listener) {
         this.binding = binding;
         this.context = context;
+        this.listener = listener;
+        imagesAdaptar = new PollImagesAdaptar(images, context, true);
+        binding.content.imagesRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        binding.content.imagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        binding.content.imagesRecyclerView.setAdapter(imagesAdaptar);
         binding.content.btnAddTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +99,13 @@ public class NewPollActivityViewModel {
                 addImageButtonClicked();
             }
         });
+
+        binding.content.btnAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddImage();
+            }
+        });
     }
 
     private void addImageButtonClicked() {
@@ -93,19 +118,22 @@ public class NewPollActivityViewModel {
             public void onClick(DialogInterface dialog, int which) {
                 // the user clicked on colors[which]
                 if(which == 0){
-                    dispatchTakePictureIntent();
+                    listener.startTakePictureIntent();
                 }
             }
         });
         builder.show();
     }
 
+    private void AddImage(){
+        listener.startTakePictureIntent();
+    }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(takePictureIntent);
-        }
+    public void imageUrlAdded(String url){
+        images.add(url);
+
+//        File f = new File(url);
+//        Picasso.with(context).load(f).into(binding.content.showImage);
     }
 
     private void doneButtonClicked(){
@@ -167,7 +195,10 @@ public class NewPollActivityViewModel {
     }
 
     private void uploadPoll(){
+
         final Poll poll = binding.getPoll().toPoll();
+        //todo: saveImagesToUploadInDB(poll.get_id(), binding.getPoll());
+        //todo: this will store the uri together with the index of the image and the pollId
         uploadPoll(poll);
     }
     private void uploadPoll(Poll poll) {
@@ -200,5 +231,10 @@ public class NewPollActivityViewModel {
                         ((Activity) context).finish();
                     }
                 });
+    }
+
+    public interface NewPollViewmodelListener{
+        public void startTakePictureIntent();
+        public void startLoadPictureIntent();
     }
 }
