@@ -59,9 +59,11 @@ public class PollImagesAdaptar extends RecyclerView.Adapter<PollImagesAdaptar.Vi
 
     @Override
     public Viewholder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v =  LayoutInflater.from(parent.getContext()).inflate( R.layout.row_image_new_poll, parent, false);
-        if(!isNewPoll){
-            //todo: v = iets anders
+        View v =  null;
+        if(isNewPoll){
+            v = LayoutInflater.from(parent.getContext()).inflate( R.layout.row_image_new_poll, parent, false);
+        }else{
+            v = LayoutInflater.from(parent.getContext()).inflate( R.layout.row_image_poll, parent, false);
         }
         PollImagesAdaptar.Viewholder vh = new PollImagesAdaptar.Viewholder(v);
         return vh;
@@ -71,15 +73,19 @@ public class PollImagesAdaptar extends RecyclerView.Adapter<PollImagesAdaptar.Vi
     public void onBindViewHolder(Viewholder holder, int position) {
         final String url= imagesList.get(position);
 
-        Picasso.with(context).load(new File(url)).into(holder.imageView);
-        //todo remove button
+        if(isNewPoll)
+            Picasso.with(context).load(new File(url)).into(holder.imageView);
+        else
+            Picasso.with(context).load(url).into(holder.imageView);
 
-        holder.btnRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imagesList.remove(url);
-            }
-        });
+        if(isNewPoll) {
+            holder.btnRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imagesList.remove(url);
+                }
+            });
+        }
     }
 
     @Override
@@ -96,7 +102,9 @@ public class PollImagesAdaptar extends RecyclerView.Adapter<PollImagesAdaptar.Vi
 
 
             imageView = (ImageView)root.findViewById(R.id.img);
-            btnRemove = (Button)root.findViewById(R.id.btnRemove);
+
+            if(isNewPoll)
+                btnRemove = (Button)root.findViewById(R.id.btnRemove);
         }
 
     }

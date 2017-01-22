@@ -1,5 +1,6 @@
 package com.vandenbussche.emiel.projectsbp.models.responses;
 
+import com.vandenbussche.emiel.projectsbp.auth.Contract;
 import com.vandenbussche.emiel.projectsbp.models.Option;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
 import com.vandenbussche.emiel.projectsbp.models.Reaction;
@@ -22,6 +23,7 @@ public class PollResponse {
     private long uploadTime;
     private String pageId;
     private String pageTitle;
+    private List<String> images;
 
     public String get_id() {
         return _id;
@@ -111,6 +113,14 @@ public class PollResponse {
         this.pageTitle = pageTitle;
     }
 
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
     public Poll toPoll(){
         Poll poll = new Poll();
         poll.set_id(get_id());
@@ -125,7 +135,18 @@ public class PollResponse {
         poll.setTotalReactions(getTotalReactions());
         poll.setTotalVotes(getTotalVotes());
         poll.setUploadTime(getUploadTime());
+        poll.setImages(new ArrayList<String>());
+        for(String imageId : getImages()){
+
+            poll.getImages().add(imageIdToUrl(imageId));
+        }
+
+        poll.setNumberOfImages(getImages().size());
 
         return poll;
+    }
+
+    public static String imageIdToUrl(String imageId){
+        return Contract.BASEFILESURL + "/" + imageId + ".jpg";
     }
 }

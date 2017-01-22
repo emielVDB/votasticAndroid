@@ -31,11 +31,13 @@ public class VotasticContentProvider extends ContentProvider {
     private static final int PAGE_ID = 4;
     private static final int FOLLOWS = 5;
     private static final int NOTIFICATIONS = 6;
+    private static final int UPLOAD_IMAGES = 7;
 
     private static HashMap<String, String> POLLS_PROJECTION_MAP;
     private static HashMap<String, String> PAGES_PROJECTION_MAP;
     private static HashMap<String, String> FOLLOWS_PROJECTION_MAP;
     private static HashMap<String, String> NOTIFICATIONS_PROJECTION_MAP;
+    private static HashMap<String, String> UPLOAD_IMAGES_PROJECTION_MAP;
 
     private static final UriMatcher uriMatcher;
 
@@ -47,6 +49,7 @@ public class VotasticContentProvider extends ContentProvider {
         uriMatcher.addURI(Contract.AUTHORITY, "pages/#", PAGE_ID);
         uriMatcher.addURI(Contract.AUTHORITY, "follows", FOLLOWS);
         uriMatcher.addURI(Contract.AUTHORITY, "notifications", NOTIFICATIONS);
+        uriMatcher.addURI(Contract.AUTHORITY, "uploadimages", UPLOAD_IMAGES);
     }
 
     @Override
@@ -63,6 +66,8 @@ public class VotasticContentProvider extends ContentProvider {
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_FLAG);
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_ID, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_ID);
         POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_TITLE, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_PAGE_TITLE);
+        POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_NUMBER_OF_IMAGES, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_NUMBER_OF_IMAGES);
+        POLLS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_IMAGES, com.vandenbussche.emiel.projectsbp.database.Contract.PollsColumns.COLUMN_IMAGES);
 
         PAGES_PROJECTION_MAP = new HashMap<>();
         PAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.PagesColumns._ID);
@@ -79,7 +84,14 @@ public class VotasticContentProvider extends ContentProvider {
         NOTIFICATIONS_PROJECTION_MAP = new HashMap<>();
         NOTIFICATIONS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns._ID);
         NOTIFICATIONS_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns.COLUMN_MESSAGE, com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsColumns.COLUMN_MESSAGE);
-      
+
+        UPLOAD_IMAGES_PROJECTION_MAP = new HashMap<>();
+        UPLOAD_IMAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns._ID, com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns._ID);
+        UPLOAD_IMAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_POLL_ID, com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_POLL_ID);
+        UPLOAD_IMAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_INDEX, com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_INDEX);
+        UPLOAD_IMAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_URL, com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_URL);
+        UPLOAD_IMAGES_PROJECTION_MAP.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_FLAG, com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesColumns.COLUMN_FLAG);
+
         return true;
     }
 
@@ -106,6 +118,10 @@ public class VotasticContentProvider extends ContentProvider {
                 queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.NotificationsDB.TABLE_NAME);
                 queryBuilder.setProjectionMap(NOTIFICATIONS_PROJECTION_MAP);
                 limitString = "0, 5";
+                break;
+            case UPLOAD_IMAGES:
+                queryBuilder.setTables(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.TABLE_NAME);
+                queryBuilder.setProjectionMap(UPLOAD_IMAGES_PROJECTION_MAP);
                 break;
 
             case POLL_ID:
@@ -168,6 +184,8 @@ public class VotasticContentProvider extends ContentProvider {
                 return Contract.FOLLOWS_CONTENT_TYPE;
             case NOTIFICATIONS:
                 return Contract.NOTIFICATIONS_CONTENT_TYPE;
+            case UPLOAD_IMAGES:
+                return Contract.UPLOAD_IMAGES_CONTENT_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -215,6 +233,15 @@ public class VotasticContentProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(notificationsItemUri, null);
                 return notificationsItemUri;
 
+            case UPLOAD_IMAGES:
+                newRowId = db.insert(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.TABLE_NAME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                Uri uploadImagesItemUri = ContentUris.withAppendedId(Contract.UPLOAD_IMAGES_ITEM_URI, newRowId);
+                getContext().getContentResolver().notifyChange(uploadImagesItemUri, null);
+                return uploadImagesItemUri;
+
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -244,6 +271,13 @@ public class VotasticContentProvider extends ContentProvider {
             case FOLLOWS:
                 count = db.delete(
                         com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            case UPLOAD_IMAGES:
+                count = db.delete(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
@@ -313,6 +347,14 @@ public class VotasticContentProvider extends ContentProvider {
             case FOLLOWS:
                 count = db.update(
                         com.vandenbussche.emiel.projectsbp.database.Contract.FollowsDB.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
+                break;
+            case UPLOAD_IMAGES:
+                count = db.update(
+                        com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs

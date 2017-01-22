@@ -22,6 +22,8 @@ public class Poll extends BaseObservable implements Serializable{
     private String pageId;
     private String pageTitle;
     private boolean needsUpdate;
+    private int numberOfImages;
+    private List<String> images;
 
     public String get_id() {
         return _id;
@@ -125,6 +127,22 @@ public class Poll extends BaseObservable implements Serializable{
 
     public void setNeedsUpdate(boolean needsUpdate) {
         this.needsUpdate = needsUpdate;
+    }
+
+    public int getNumberOfImages() {
+        return numberOfImages;
+    }
+
+    public void setNumberOfImages(int numberOfImages) {
+        this.numberOfImages = numberOfImages;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public static class Flags {

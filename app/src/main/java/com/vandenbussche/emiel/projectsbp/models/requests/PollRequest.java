@@ -20,6 +20,7 @@ public class PollRequest extends BaseObservable {
     private List<String> tags;
     private List<String> options;
     private String pageId;
+    private int numberOfImages;
 
     public PollRequest(){}
 
@@ -31,6 +32,7 @@ public class PollRequest extends BaseObservable {
             this.options.add(option.getContent());
         }
         this.pageId = basePoll.getPageId();
+        this.numberOfImages = basePoll.getNumberOfImages();
     }
 
     public Poll toPoll(){
@@ -49,6 +51,7 @@ public class PollRequest extends BaseObservable {
         }
         poll.setPageId(this.pageId);
         //page name gets set manually!!!
+        poll.setNumberOfImages(this.numberOfImages);
         return poll;
     }
 
@@ -88,5 +91,13 @@ public class PollRequest extends BaseObservable {
 
     public void setPageId(String pageId) {
         this.pageId = pageId;
+    }
+
+    public int getNumberOfImages() {
+        return numberOfImages;
+    }
+
+    public void setNumberOfImages(int numberOfImages) {
+        this.numberOfImages = numberOfImages;
     }
 }

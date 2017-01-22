@@ -14,7 +14,7 @@ public class Contract {
     included automatically with a provider; the provider's developer has to define them and then make them available to other developers.
     */
 
-    public static final int DATABASE_VERSION = 10;
+    public static final int DATABASE_VERSION = 14;
     public static final String DATABASE_NAME = "database.db";
 
     public interface PollsColumns extends BaseColumns {
@@ -29,6 +29,8 @@ public class Contract {
         public static final String COLUMN_UPLOAD_TIME= "upload_time";
         public static final String COLUMN_PAGE_ID= "page_id";
         public static final String COLUMN_PAGE_TITLE= "page_title";
+        public static final String COLUMN_NUMBER_OF_IMAGES= "numger_of_images";
+        public static final String COLUMN_IMAGES= "images";
     }
     public interface PagesColumns extends BaseColumns {
         public static final String TABLE_NAME = "pages";
@@ -49,6 +51,14 @@ public class Contract {
         public static final String COLUMN_MESSAGE = "message";
     }
 
+    public interface UploadImagesColumns extends BaseColumns {
+        public static final String TABLE_NAME = "upload_images";
+        public static final String COLUMN_POLL_ID = "poll_id";
+        public static final String COLUMN_INDEX = "pic_index";
+        public static final String COLUMN_URL = "url";
+        public static final String COLUMN_FLAG = "flag";
+    }
+
     public static abstract class PollsDB implements PollsColumns {
 
         public static final String CREATE_TABLE = "create table "
@@ -63,7 +73,9 @@ public class Contract {
                 + COLUMN_FLAG + " integer not null, "
                 + COLUMN_UPLOAD_TIME + " integer, "
                 + COLUMN_PAGE_ID + " text, "
-                + COLUMN_PAGE_TITLE + " text "
+                + COLUMN_PAGE_TITLE + " text, "
+                + COLUMN_NUMBER_OF_IMAGES + " integer, "
+                + COLUMN_IMAGES + " text "
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -102,6 +114,21 @@ public class Contract {
                 + TABLE_NAME + "( "
                 + _ID + " integer primary key autoincrement, "
                 + COLUMN_MESSAGE + " text not null"
+                + ");";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+
+    public static abstract class UploadImagesDB implements UploadImagesColumns {
+
+        public static final String CREATE_TABLE = "create table "
+                + TABLE_NAME + "( "
+                + _ID + " integer primary key autoincrement, "
+                + COLUMN_POLL_ID + " text not null, "
+                + COLUMN_INDEX + " integer not null, "
+                + COLUMN_URL + " text not null, "
+                + COLUMN_FLAG + " integer not null"
                 + ");";
 
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

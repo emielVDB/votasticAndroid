@@ -18,20 +18,27 @@ import com.google.gson.Gson;
 import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
 import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
+import com.vandenbussche.emiel.projectsbp.database.UploadImagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.UploadImage;
 import com.vandenbussche.emiel.projectsbp.models.requests.PageRequest;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 import com.vandenbussche.emiel.projectsbp.models.responses.PageResponse;
 import com.vandenbussche.emiel.projectsbp.models.responses.PollResponse;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.Console;
+import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -61,10 +68,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Log.i("SyncAdapter","syncProductItems");
-
             this.syncResult = syncResult;
             syncMyPollsItems(syncResult);
             syncMyPagesItems(syncResult);
+            uploadImages();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -90,16 +97,27 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                 @Override
                                 public void call(PollResponse pollResponse) {
                                     System.out.println("tis eignelijk gelukt");
+
+                                    List<String> imageUris = new ArrayList<String>();
+                                    for(String imageId : pollResponse.getImages()){
+                                        imageUris.add(PollResponse.imageIdToUrl(imageId));
+                                    }
 //                                    Uri updateUri = ContentUris.Contract.POLLS_ITEM_URI, pollLoopItem.get_id());
                                     Uri updateUri = Contract.POLLS_URI;
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB._ID, pollResponse.get_id());
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_FLAG, Poll.Flags.OK);
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_UPLOAD_TIME, pollResponse.getUploadTime());
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_IMAGES, new Gson().toJson(imageUris));
 
                                     contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pollLoopItem.get_id()});
 
                                     syncResult.madeSomeProgress();
+
+                                    if(pollLoopItem.getNumberOfImages() > 0){
+                                        pollImagesReadyToUpload(pollLoopItem.get_id(), pollResponse.get_id());
+                                        uploadImages();
+                                    }
                                 }
                             });
                 }catch (Exception ex){ex.printStackTrace();}
@@ -155,5 +173,69 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numIoExceptions++;
             throw ex;
         }
+    }
+
+    private void uploadImages(){
+        Cursor mData = contentResolver.query(Contract.UPLOAD_IMAGES_URI, UploadImagesAccess.allColumns, "flag = ?", new String[]{UploadImage.Flags.READY_TO_UPLOAD+""}, null);
+
+        //door te tellen hoeveel records er zijn, zijn we zeker dat de data binnen gehaald is
+        mData.getCount();
+
+        List<UploadImage> uploadImages = UploadImagesAccess.cursorToUploadImageList(mData);
+
+        for (UploadImage uploadImage : uploadImages){
+            //todo: set op isUploadingflag
+            //todo upload
+
+            // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+            // use the FileUtils to get the actual file by uri
+            //File file = FileUtils.getFile( uploadImage.getUrl());
+            File file = new File(uploadImage.getUrl());
+
+            // create RequestBody instance from file
+            RequestBody requestFile =
+                    RequestBody.create(okhttp3.MultipartBody.FORM, file);
+
+            // MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+
+            // add another part within the multipart request
+            String descriptionString = "hello, this is description speaking";
+            RequestBody description =
+                    RequestBody.create(
+                            okhttp3.MultipartBody.FORM, descriptionString);
+
+            try {
+                // finally, execute the request
+                ApiHelper.getApiService(getContext()).upload(description, body, uploadImage.getPollId(), uploadImage.getIndex())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<String>() {
+                            @Override
+                            public void call(String pollResponse) {
+                                String s = "wukke dienen";
+
+                            }
+                        });
+
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+    }
+
+    private void pollImagesReadyToUpload(String oldPollId, String newPollId){
+        Uri updateUri = Contract.UPLOAD_IMAGES_URI;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.COLUMN_POLL_ID, newPollId);
+        contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.COLUMN_FLAG, UploadImage.Flags.READY_TO_UPLOAD);
+
+        contentResolver.update(updateUri,
+                contentValues,
+                com.vandenbussche.emiel.projectsbp.database.Contract.UploadImagesDB.COLUMN_POLL_ID+" = ?",
+                new String[]{oldPollId});
+
     }
 }

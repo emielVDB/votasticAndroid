@@ -1,11 +1,17 @@
 package com.vandenbussche.emiel.projectsbp.models;
 
+import android.databinding.ObservableArrayList;
+import android.databinding.ObservableList;
 import android.databinding.ViewDataBinding;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.vandenbussche.emiel.projectsbp.VotasticApplication;
+import com.vandenbussche.emiel.projectsbp.adapters.PollImagesAdaptar;
 import com.vandenbussche.emiel.projectsbp.api.ApiHelper;
 import com.vandenbussche.emiel.projectsbp.binders.models.PollBinderModel;
 import com.vandenbussche.emiel.projectsbp.database.Contract;
@@ -33,6 +39,7 @@ public abstract class PollBindable {
     public PollBinderModel poll;
 
     public LinearLayout optionsLinearLayout;
+    public RecyclerView imagesRecycler;
 
     public List<OptionViewModel> optionViewModels;
 
@@ -42,8 +49,21 @@ public abstract class PollBindable {
     public void setPoll(Poll poll, boolean animate){
         this.poll = new PollBinderModel(poll);
 
+
+        //images
+        if(poll.getImages() != null && poll.getImages().size() > 0) {
+            ObservableList<String> observableImages = new ObservableArrayList<>();
+            observableImages.addAll(poll.getImages());
+            PollImagesAdaptar imagesAdaptar = new PollImagesAdaptar(observableImages,
+                    binding.getRoot().getContext(), false);
+            imagesRecycler.setItemAnimator(new DefaultItemAnimator());
+            imagesRecycler.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext(),
+                    LinearLayoutManager.HORIZONTAL, false));
+            imagesRecycler.setAdapter(imagesAdaptar);
+        }
+
+        //options
         optionViewModels = new ArrayList<>();
-//        binding.lblQuestion.setText("hallooooo fak");
         optionsLinearLayout.setVisibility(View.VISIBLE);
         optionsLinearLayout.removeAllViews();
         int optionLoopnr = 0;

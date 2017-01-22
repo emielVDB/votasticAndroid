@@ -2,6 +2,7 @@ package com.vandenbussche.emiel.projectsbp.viewmodel;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class PollViewModel extends PollBindable{
 
         binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_poll, parent, false);
         optionsLinearLayout = (LinearLayout) binding.getRoot().findViewById(R.id.optionsLinearLayout);
+        imagesRecycler = (RecyclerView) binding.getRoot().findViewById(R.id.imagesRecyclerView);
         ((RowPollBinding)binding).btnPageDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

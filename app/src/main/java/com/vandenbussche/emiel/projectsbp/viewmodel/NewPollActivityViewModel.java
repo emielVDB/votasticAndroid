@@ -24,11 +24,13 @@ import com.vandenbussche.emiel.projectsbp.adapters.PollImagesAdaptar;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
+import com.vandenbussche.emiel.projectsbp.database.UploadImagesAccess;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.databinding.ActivityNewPollBinding;
 import com.vandenbussche.emiel.projectsbp.databinding.ContentNewPollBinding;
 import com.vandenbussche.emiel.projectsbp.models.Page;
 import com.vandenbussche.emiel.projectsbp.models.Poll;
+import com.vandenbussche.emiel.projectsbp.models.UploadImage;
 import com.vandenbussche.emiel.projectsbp.models.requests.PollRequest;
 
 import java.io.File;
@@ -131,9 +133,6 @@ public class NewPollActivityViewModel {
 
     public void imageUrlAdded(String url){
         images.add(url);
-
-//        File f = new File(url);
-//        Picasso.with(context).load(f).into(binding.content.showImage);
     }
 
     private void doneButtonClicked(){
@@ -195,11 +194,45 @@ public class NewPollActivityViewModel {
     }
 
     private void uploadPoll(){
+        saveImagesInUploadDB();
+    }
 
+    int imagesLeftToUpload = 0;
+    private void saveImagesInUploadDB(){
         final Poll poll = binding.getPoll().toPoll();
-        //todo: saveImagesToUploadInDB(poll.get_id(), binding.getPoll());
-        //todo: this will store the uri together with the index of the image and the pollId
-        uploadPoll(poll);
+        poll.setNumberOfImages(images.size());
+
+        if(images.size() == 0) {
+            uploadPoll(poll);
+            return;
+        }
+
+        imagesLeftToUpload = images.size();
+        int imageLoopnr = 0;
+        for(String imageUrl : images){
+            UploadImage uploadImage = new UploadImage();
+            uploadImage.setPollId(poll.get_id());
+            uploadImage.setIndex(imageLoopnr);
+            uploadImage.setUrl(imageUrl);
+            uploadImage.setFlag(UploadImage.Flags.NEW);
+
+            UploadImagesAccess.insert(context, UploadImagesAccess.uploadImageToContentValuesList(uploadImage))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+                            imagesLeftToUpload--;
+                            if(imagesLeftToUpload == 0) {
+                                uploadPoll(poll);
+                            }
+                        }
+
+                    });
+
+
+            imageLoopnr++;
+        }
     }
     private void uploadPoll(Poll poll) {
         final ProgressDialog pDialog = new ProgressDialog(context);

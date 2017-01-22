@@ -44,11 +44,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(Contract.PagesDB.DELETE_TABLE);
             db.execSQL(Contract.FollowsDB.DELETE_TABLE);
             db.execSQL(Contract.NotificationsDB.DELETE_TABLE);
+            db.execSQL(Contract.UploadImagesDB.DELETE_TABLE);
 
             db.execSQL(Contract.PollsDB.CREATE_TABLE);
             db.execSQL(Contract.PagesDB.CREATE_TABLE);
             db.execSQL(Contract.FollowsDB.CREATE_TABLE);
             db.execSQL(Contract.NotificationsDB.CREATE_TABLE);
+            db.execSQL(Contract.UploadImagesDB.CREATE_TABLE);
         }
 
 

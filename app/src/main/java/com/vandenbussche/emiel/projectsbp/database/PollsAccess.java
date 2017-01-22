@@ -40,6 +40,8 @@ public class PollsAccess {
             Contract.PollsColumns.COLUMN_FLAG,
             Contract.PollsColumns.COLUMN_PAGE_ID,
             Contract.PollsColumns.COLUMN_PAGE_TITLE,
+            Contract.PollsColumns.COLUMN_NUMBER_OF_IMAGES,
+            Contract.PollsColumns.COLUMN_IMAGES,
     };
 
 
@@ -235,10 +237,15 @@ public class PollsAccess {
         poll.setChoiceIndex(cursor.getInt(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_CHOICE_INDEX)));
         poll.setPageId(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_PAGE_ID)));
         poll.setPageTitle(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_PAGE_TITLE)));
+        poll.setNumberOfImages(cursor.getInt(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_NUMBER_OF_IMAGES)));
 
         List<String> tags = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_TAGS)),
                 new TypeToken<ArrayList<String>>() {}.getType());//list<String> type
         poll.setTags(tags);
+
+        List<String> images = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_IMAGES)),
+                new TypeToken<ArrayList<String>>() {}.getType());//list<String> type
+        poll.setImages(images);
 
         List<Option> options = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(Contract.PollsColumns.COLUMN_OPTIONS)),
                 new TypeToken<ArrayList<Option>>() {}.getType());//list<String> type
@@ -270,12 +277,15 @@ public class PollsAccess {
                 Contract.PollsColumns.COLUMN_FLAG,
                 Contract.PollsColumns.COLUMN_PAGE_ID,
                 Contract.PollsColumns.COLUMN_PAGE_TITLE,
+                Contract.PollsColumns.COLUMN_NUMBER_OF_IMAGES,
+                Contract.PollsColumns.COLUMN_IMAGES,
         };
 
 
         Object[] columnValues = new Object[]{poll.get_id(), poll.getQuestion(),new Gson().toJson(poll.getTags()),
                 new Gson().toJson(poll.getOptions()), poll.getChoiceIndex(), poll.getTotalVotes(), poll.getTotalReactions(),
-                poll.getFlag(), poll.getPageId(), poll.getPageTitle()};
+                poll.getFlag(), poll.getPageId(), poll.getPageTitle(), poll.getNumberOfImages(),
+                new Gson().toJson(poll.getImages())};
 
         ContentValues contentValues = new ContentValues();
         int counter = 0;
