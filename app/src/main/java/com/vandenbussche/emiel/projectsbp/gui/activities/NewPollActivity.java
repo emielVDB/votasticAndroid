@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +38,7 @@ import com.vandenbussche.emiel.projectsbp.viewmodel.NewPollActivityViewModel;
 import com.vandenbussche.emiel.projectsbp.viewmodel.NewsFragmentViewModel;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -111,7 +113,16 @@ public class NewPollActivity extends AppCompatActivity implements NewPollActivit
 
     @Override
     public void startLoadPictureIntent() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
 
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_LOAD);
     }
 
     @Override
@@ -121,9 +132,19 @@ public class NewPollActivity extends AppCompatActivity implements NewPollActivit
             //getContentResolver().notifyChange(Uri.parse(mCurrentPhotoPath), null);
 
             //setPic();
-            resizePicture();
+            resizePicture(mCurrentPhotoPath);
+            newPollActivityViewModel.imageUrlAdded(mCurrentPhotoPath);
+        }
 
+        if (requestCode == REQUEST_IMAGE_LOAD && resultCode == RESULT_OK) {
+            System.out.println("jajaajajajajja image gekosen");
 
+            try {
+                createImageFile();
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+            resizePicture(data.getData());
             newPollActivityViewModel.imageUrlAdded(mCurrentPhotoPath);
         }
     }
@@ -148,13 +169,30 @@ public class NewPollActivity extends AppCompatActivity implements NewPollActivit
         return image;
     }
 
-    private void resizePicture(){
+    private void resizePicture(String inputPath){
         try {
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = false;
-            Bitmap photo = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-            int photoW = bmOptions.outWidth;
-            int photoH = bmOptions.outHeight;
+            Bitmap photo = BitmapFactory.decodeFile(inputPath, bmOptions);
+
+            resizePicture(photo);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private void resizePicture(Uri imagePath){
+        try {
+            Bitmap photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imagePath);
+            resizePicture(photo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void resizePicture(Bitmap photo){
+        try{
+            int photoW = photo.getWidth();
+            int photoH = photo.getHeight();
 
             int destWidth = (int)(1000f * ((float)photoW / (float)photoH));
 

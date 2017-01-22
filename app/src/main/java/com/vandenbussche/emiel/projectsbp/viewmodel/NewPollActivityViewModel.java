@@ -101,17 +101,10 @@ public class NewPollActivityViewModel {
                 addImageButtonClicked();
             }
         });
-
-        binding.content.btnAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddImage();
-            }
-        });
     }
 
     private void addImageButtonClicked() {
-        CharSequence colors[] = new CharSequence[] {"Take picture", "Gallery"};
+        CharSequence colors[] = new CharSequence[] {"Take picture", "From gallery"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Add image");
@@ -121,6 +114,8 @@ public class NewPollActivityViewModel {
                 // the user clicked on colors[which]
                 if(which == 0){
                     listener.startTakePictureIntent();
+                }else if(which == 1){
+                    listener.startLoadPictureIntent();
                 }
             }
         });
