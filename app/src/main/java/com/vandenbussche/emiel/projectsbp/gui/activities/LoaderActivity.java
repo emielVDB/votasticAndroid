@@ -25,8 +25,8 @@ public class LoaderActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         if(AuthHelper.isUserLoggedIn(this)) {
             VotasticApplication.initConnection(getApplicationContext());
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -76,7 +77,7 @@ public class PollImagesAdaptar extends RecyclerView.Adapter<PollImagesAdaptar.Vi
         if(isNewPoll)
             Picasso.with(context).load(new File(url)).into(holder.imageView);
         else
-            Picasso.with(context).load(url).into(holder.imageView);
+            Picasso.with(context).load(url).placeholder(R.drawable.loading_image).into(holder.imageView);
 
         if(isNewPoll) {
             holder.btnRemove.setOnClickListener(new View.OnClickListener() {

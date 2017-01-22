@@ -17,10 +17,11 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
-        <Button
+        <ImageButton
             android:id="@+id/btnRemove"
-            android:text="Remove"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/minus_red"
+            style="?android:attr/borderlessButtonStyle"/>
     </LinearLayout>
 </layout>

@@ -27,7 +27,8 @@
             android:textSize="@dimen/title_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{poll.poll.question}" />
+            android:text="@{poll.poll.question}"
+            android:gravity="center"/>
 
         <LinearLayout
             android:id="@+id/optionsLinearLayout"

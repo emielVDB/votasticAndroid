@@ -8,10 +8,12 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -35,6 +37,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -42,6 +45,9 @@ import okhttp3.RequestBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+import static android.os.Debug.waitForDebugger;
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.POLL_UPLOADED_URI;
 
 /**
  * Created by Stijn on 8/11/2016.
@@ -68,6 +74,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Log.i("SyncAdapter","syncProductItems");
+
             this.syncResult = syncResult;
             syncMyPollsItems(syncResult);
             syncMyPagesItems(syncResult);
@@ -106,7 +113,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                     Uri updateUri = Contract.POLLS_URI;
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB._ID, pollResponse.get_id());
-                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_FLAG, Poll.Flags.OK);
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_UPLOAD_TIME, pollResponse.getUploadTime());
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_IMAGES, new Gson().toJson(imageUris));
 
@@ -117,6 +123,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                     if(pollLoopItem.getNumberOfImages() > 0){
                                         pollImagesReadyToUpload(pollLoopItem.get_id(), pollResponse.get_id());
                                         uploadImages();
+                                    }else{
+                                        pollFullyUploaded(pollLoopItem.get_id());
                                     }
                                 }
                             });
@@ -131,6 +139,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numIoExceptions++;
             throw ex;
         }
+    }
+
+    private void pollFullyUploaded(String pollId) {
+        Uri updateUri = Contract.POLLS_URI;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_FLAG, Poll.Flags.OK);
+
+        contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pollId});
+
+        getContext().getContentResolver().notifyChange(POLL_UPLOADED_URI, null, false);
     }
 
     private void syncMyPagesItems(final SyncResult syncResult) {
@@ -182,14 +200,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mData.getCount();
 
         List<UploadImage> uploadImages = UploadImagesAccess.cursorToUploadImageList(mData);
+        final HashMap<String, Integer> imagesLeftForPollId = new HashMap<>();
 
-        for (UploadImage uploadImage : uploadImages){
-            //todo: set op isUploadingflag
-            //todo upload
+        for(final UploadImage uploadImage : uploadImages){
+            Integer currentVal = imagesLeftForPollId.get(uploadImage.getPollId()) ;
+            if(currentVal == null) currentVal = 0;
+            currentVal++;
+            imagesLeftForPollId.put(uploadImage.getPollId() , currentVal);
+        }
 
-            // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
-            // use the FileUtils to get the actual file by uri
-            //File file = FileUtils.getFile( uploadImage.getUrl());
+        for (final UploadImage uploadImage : uploadImages){
             File file = new File(uploadImage.getUrl());
 
             // create RequestBody instance from file
@@ -213,9 +233,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<String>() {
                             @Override
-                            public void call(String pollResponse) {
-                                String s = "wukke dienen";
+                            public void call(String response) {
 
+                                String s = "wukke dienen";
+                                contentResolver.delete(Contract.UPLOAD_IMAGES_URI, "_id = ?", new String[]{uploadImage.get_id()+""});
+
+                                int imagesLeft = imagesLeftForPollId.get(uploadImage.getPollId());
+                                imagesLeft--;
+                                imagesLeftForPollId.put(uploadImage.getPollId(), imagesLeft);
+                                if(imagesLeft == 0){
+                                    pollFullyUploaded(uploadImage.getPollId());
+                                }
                             }
                         });
 

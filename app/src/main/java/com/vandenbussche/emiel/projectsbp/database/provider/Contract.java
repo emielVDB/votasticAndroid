@@ -32,4 +32,7 @@ public class Contract {
 
     public static final int POLL_ID_PATH_POSITION = 1;
     public static final int PAGE_ID_PATH_POSITION = 1;
+
+
+    public static final Uri POLL_UPLOADED_URI = Uri.parse("content://" + AUTHORITY + "/polluploaded/");
 }

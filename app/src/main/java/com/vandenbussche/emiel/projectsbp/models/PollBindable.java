@@ -60,6 +60,8 @@ public abstract class PollBindable {
             imagesRecycler.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext(),
                     LinearLayoutManager.HORIZONTAL, false));
             imagesRecycler.setAdapter(imagesAdaptar);
+        }else{
+            imagesRecycler.setAdapter(null);
         }
 
         //options

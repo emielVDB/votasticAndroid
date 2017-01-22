@@ -30,11 +30,6 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             android:animateLayoutChanges="true">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Title" />
-
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,11 +52,12 @@
                     android:layout_weight="1"
                     android:hint="Tags" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/btnAddTag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add" />
+                    android:src="@drawable/add_green_filled"
+                    style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
 
             <LinearLayout
@@ -75,7 +71,9 @@
                 android:id="@+id/btnDone"
                 android:text="Done"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/colorPrimary"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

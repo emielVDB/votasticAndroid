@@ -17,8 +17,8 @@ import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.adapters.PollsAdaptarWithHeader;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
+import com.vandenbussche.emiel.projectsbp.database.Contract;
 import com.vandenbussche.emiel.projectsbp.database.PollsAccess;
-import com.vandenbussche.emiel.projectsbp.database.provider.Contract;
 import com.vandenbussche.emiel.projectsbp.databinding.FragmentProfileMyPollsBinding;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.BlankFragment;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileMyPagesFragment;
@@ -55,7 +55,7 @@ public class ProfileMyPollsFragmentViewModel extends BaseObservable implements P
         binding.setPollList(pollList);
         notifyPropertyChanged(BR.pollList);
 
-        PollsAccess.getAll(context)
+        PollsAccess.getByKey(context, Contract.PollsDB.COLUMN_FLAG, Poll.Flags.OK+"")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Poll>>() {
                     @Override

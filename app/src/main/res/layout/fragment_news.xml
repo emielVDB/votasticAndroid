@@ -32,14 +32,29 @@
                 android:layout_margin="@dimen/activity_vertical_margin"
                 android:textSize="@dimen/title_size"
             />
-            <TextView
-                android:text="Click the search icon to find new posts"
-                android:gravity="center"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_vertical_margin"
-                android:layout_marginRight="@dimen/activity_vertical_margin"
-                />
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:text="Click the "
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:src="@mipmap/search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"/>
+
+                <TextView
+                    android:text=" icon to find new polls"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

@@ -1,12 +1,19 @@
 package com.vandenbussche.emiel.projectsbp.gui.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -17,6 +24,8 @@ import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.databinding.FragmentProfileMyPollsBinding;
 import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPollsFragmentViewModel;
 
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.POLL_UPLOADED_URI;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,10 +33,11 @@ import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPollsFragmentViewMo
  * {@link ProfileMyPollsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ProfileMyPollsFragment extends Fragment {
+public class ProfileMyPollsFragment extends Fragment{
     FragmentProfileMyPollsBinding binding;
     ProfileMyPollsFragmentViewModel newsFragmentViewModel;
     private OnFragmentInteractionListener mListener;
+    private ContentObserver mObserver;
 
     public ProfileMyPollsFragment() {
         // Required empty public constructor
@@ -48,9 +58,30 @@ public class ProfileMyPollsFragment extends Fragment {
         }
         binding.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
         newsFragmentViewModel = new ProfileMyPollsFragmentViewModel(binding, getContext(), getFragmentManager());
-        newsFragmentViewModel.loadPolls();
+
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        getContext().getContentResolver().unregisterContentObserver(mObserver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        mObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            public void onChange(boolean selfChange) {
+                newsFragmentViewModel.loadPolls();
+            }
+        };
+        getContext().getContentResolver().registerContentObserver(POLL_UPLOADED_URI, true, mObserver);
+
+
+        newsFragmentViewModel.loadPolls();
     }
 
     public void onButtonPressed(Uri uri) {
