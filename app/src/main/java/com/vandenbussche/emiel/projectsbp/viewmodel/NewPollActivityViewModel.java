@@ -137,7 +137,7 @@ public class NewPollActivityViewModel {
                 .subscribe(new Action1<List<Page>>() {
                     @Override
                     public void call(final List<Page> pages) {
-                        if(pages.size() == 0){ uploadPoll(); return;}
+                        if(pages.size() == 0){ uploadPoll(""); return;}
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -150,7 +150,7 @@ public class NewPollActivityViewModel {
                                 })
                                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        uploadPoll();
+                                        uploadPoll("");
                                     }
                                 });
                         // Create the AlertDialog object and return it
@@ -175,26 +175,27 @@ public class NewPollActivityViewModel {
                 binding.getPoll().setPageId(pages.get(which).get_id());
 
                 final Poll poll = binding.getPoll().toPoll();
-                poll.setPageTitle(pages.get(which).getTitle());
-                uploadPoll(poll);
+
+                uploadPoll(pages.get(which).getTitle());
             }
         })
         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                uploadPoll();
+                uploadPoll("");
             }
         });
         // Create the AlertDialog object and return it
         builder.create().show();
     }
 
-    private void uploadPoll(){
-        saveImagesInUploadDB();
+    private void uploadPoll(String pageTitle){
+        saveImagesInUploadDB(pageTitle);
     }
 
     int imagesLeftToUpload = 0;
-    private void saveImagesInUploadDB(){
+    private void saveImagesInUploadDB(String pageTitle){
         final Poll poll = binding.getPoll().toPoll();
+        if(!pageTitle.equals("")) poll.setPageTitle(pageTitle);
         poll.setNumberOfImages(images.size());
 
         if(images.size() == 0) {

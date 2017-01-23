@@ -47,6 +47,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.os.Debug.waitForDebugger;
+import static android.os.Debug.waitingForDebugger;
 import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.POLL_UPLOADED_URI;
 
 /**
@@ -74,7 +75,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Log.i("SyncAdapter","syncProductItems");
-
+waitingForDebugger();
             this.syncResult = syncResult;
             syncMyPollsItems(syncResult);
             syncMyPagesItems(syncResult);
