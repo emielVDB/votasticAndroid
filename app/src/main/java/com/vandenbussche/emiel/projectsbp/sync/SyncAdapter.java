@@ -116,7 +116,7 @@ waitingForDebugger();
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB._ID, pollResponse.get_id());
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_UPLOAD_TIME, pollResponse.getUploadTime());
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_IMAGES, new Gson().toJson(imageUris));
-
+                                    contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PollsDB.COLUMN_FLAG, Poll.Flags.UPLOADING_IMAGES);
                                     contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pollLoopItem.get_id()});
 
                                     syncResult.madeSomeProgress();

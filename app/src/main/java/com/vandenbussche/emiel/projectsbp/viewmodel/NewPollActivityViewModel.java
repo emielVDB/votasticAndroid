@@ -18,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 
-import com.squareup.picasso.Picasso;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.adapters.PollImagesAdaptar;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
@@ -120,10 +119,6 @@ public class NewPollActivityViewModel {
             }
         });
         builder.show();
-    }
-
-    private void AddImage(){
-        listener.startTakePictureIntent();
     }
 
     public void imageUrlAdded(String url){

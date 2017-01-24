@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.auth.AuthHelper;
 import com.vandenbussche.emiel.projectsbp.database.provider.Contract;

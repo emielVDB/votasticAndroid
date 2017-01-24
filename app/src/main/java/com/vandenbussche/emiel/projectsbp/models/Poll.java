@@ -149,5 +149,6 @@ public class Poll extends BaseObservable implements Serializable{
         public static final int NEW = 0;
         public static final int OK = 1;
         public static final int NEEDS_UPDATE = 2;
+        public static final int UPLOADING_IMAGES = 3;
     }
 }
