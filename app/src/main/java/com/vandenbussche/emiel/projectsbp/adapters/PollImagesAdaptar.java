@@ -7,10 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.vandenbussche.emiel.projectsbp.R;
 
 import java.io.File;
@@ -76,11 +75,10 @@ public class PollImagesAdaptar extends RecyclerView.Adapter<PollImagesAdaptar.Vi
 
 
         if(isNewPoll)
-            Glide.with(context).load(new File(url)).into(holder.imageView);
+            Picasso.with(context).load(new File(url)).into(holder.imageView);
         else
-            Glide.with(context).load(url)
-                    .thumbnail(Glide.with(context).load(R.drawable.loading_gif))
-                    .crossFade()
+            Picasso.with(context).load(url)
+                    .placeholder(R.drawable.loading_image)
                     .into(holder.imageView);
 //            Glide.with(context).load(url).placeholder(R.drawable.loading_gif).into(holder.imageView);
 
