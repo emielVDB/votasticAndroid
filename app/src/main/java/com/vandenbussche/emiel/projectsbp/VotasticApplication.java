@@ -67,7 +67,7 @@ public class VotasticApplication extends Application{
     public static class ConnectSocketTask extends AsyncTask<String, Void, Socket> {
 
         @Override
-        protected Socket doInBackground(String... params) {
+        protected Socket doInBackground(final String... params) {
             if(VotasticApplication.getConnection() != null) return VotasticApplication.getConnection();
 
             try {
@@ -80,7 +80,13 @@ public class VotasticApplication extends Application{
                         System.out.println("socketAntwoord!: "+ text);
                     }
                 });
-                connection.emit("authenticate", params[0]);
+                connection.on("connect", new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        connection.emit("authenticate", params[0]);
+                    }
+                });
+
 
             } catch (URISyntaxException e) {
                 e.printStackTrace();
