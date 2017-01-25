@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.vandenbussche.emiel.projectsbp.BR;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.adapters.PagesAdaptarWithHeader;
+import com.vandenbussche.emiel.projectsbp.database.Contract;
 import com.vandenbussche.emiel.projectsbp.database.PagesAccess;
 import com.vandenbussche.emiel.projectsbp.databinding.FragmentProfileMyPagesBinding;
 import com.vandenbussche.emiel.projectsbp.gui.fragments.ProfileMyPagesFragment;
@@ -43,7 +44,7 @@ public class ProfileMyPagesFragmentViewModel extends BaseObservable implements P
         binding.setPageList(pageList);
         notifyPropertyChanged(BR.pageList);
 
-        PagesAccess.getAll(context)
+        PagesAccess.getByKey(context, Contract.PagesDB.COLUMN_FLAG, Page.Flags.OK+"")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Page>>() {
                     @Override

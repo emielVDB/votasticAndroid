@@ -3,8 +3,11 @@ package com.vandenbussche.emiel.projectsbp.gui.fragments;
 
 
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +21,9 @@ import com.vandenbussche.emiel.projectsbp.databinding.FragmentProfileMyPollsBind
 import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPagesFragmentViewModel;
 import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPollsFragmentViewModel;
 
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGE_UPLOADED_URI;
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.POLL_UPLOADED_URI;
+
 /**
  * A simple {@link Fragment} subclass.
  *
@@ -25,6 +31,7 @@ import com.vandenbussche.emiel.projectsbp.viewmodel.ProfileMyPollsFragmentViewMo
 public class ProfileMyPagesFragment extends Fragment {
     FragmentProfileMyPagesBinding binding;
     ProfileMyPagesFragmentViewModel newsFragmentViewModel;
+    private ContentObserver mObserver;
 
     public ProfileMyPagesFragment() {
         // Required empty public constructor
@@ -46,9 +53,29 @@ public class ProfileMyPagesFragment extends Fragment {
         }
         binding.pagesRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
         newsFragmentViewModel = new ProfileMyPagesFragmentViewModel(binding, getContext(), getFragmentManager());
-        newsFragmentViewModel.loadPages();
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        getContext().getContentResolver().unregisterContentObserver(mObserver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        mObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            public void onChange(boolean selfChange) {
+                newsFragmentViewModel.loadPages();
+            }
+        };
+        getContext().getContentResolver().registerContentObserver(PAGE_UPLOADED_URI, true, mObserver);
+
+
+        newsFragmentViewModel.loadPages();
     }
 
 }

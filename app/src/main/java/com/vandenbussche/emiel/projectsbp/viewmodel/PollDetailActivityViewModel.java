@@ -58,8 +58,7 @@ public class PollDetailActivityViewModel implements IncrementalReactionsAdaptarW
         showHeader();
         //loadReactions();
 
-
-        VotasticApplication.getConnection().emit("join", "poll"+poll.get_id());
+        //VotasticApplication.getConnection().emit("join", "poll"+poll.get_id());
         VotasticApplication.getConnection().on("poll" + poll.get_id(), new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -88,7 +87,7 @@ public class PollDetailActivityViewModel implements IncrementalReactionsAdaptarW
                 "reactionSubmit",
                 new Gson().toJson(new ReactionRequest(poll.get_id(), content)));
 
-        adaptar.addNewReaction(new Reaction(content, System.currentTimeMillis()));
+//        adaptar.addNewReaction(new Reaction(content, System.currentTimeMillis()));
 
         linearLayoutManager.scrollToPositionWithOffset(1, 80);
 
@@ -112,7 +111,6 @@ public class PollDetailActivityViewModel implements IncrementalReactionsAdaptarW
                 adaptar.addReactions(reactionResponseList);
             }
         });
-
 
     }
 

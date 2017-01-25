@@ -35,4 +35,6 @@ public class Contract {
 
 
     public static final Uri POLL_UPLOADED_URI = Uri.parse("content://" + AUTHORITY + "/polluploaded/");
+    public static final Uri PAGE_UPLOADED_URI = Uri.parse("content://" + AUTHORITY + "/pageuploaded/");
+    public static final Uri FOLLOWS_CHANGED_URI = Uri.parse("content://" + AUTHORITY + "/followschanged/");
 }

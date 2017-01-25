@@ -48,6 +48,7 @@ import rx.schedulers.Schedulers;
 
 import static android.os.Debug.waitForDebugger;
 import static android.os.Debug.waitingForDebugger;
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGE_UPLOADED_URI;
 import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.POLL_UPLOADED_URI;
 
 /**
@@ -75,7 +76,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Log.i("SyncAdapter","syncProductItems");
-waitingForDebugger();
+//            waitingForDebugger();
             this.syncResult = syncResult;
             syncMyPollsItems(syncResult);
             syncMyPagesItems(syncResult);
@@ -125,7 +126,7 @@ waitingForDebugger();
                                         pollImagesReadyToUpload(pollLoopItem.get_id(), pollResponse.get_id());
                                         uploadImages();
                                     }else{
-                                        pollFullyUploaded(pollLoopItem.get_id());
+                                        pollFullyUploaded(pollResponse.get_id());
                                     }
                                 }
                             });
@@ -175,8 +176,9 @@ waitingForDebugger();
                                     ContentValues contentValues = new ContentValues();
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB._ID, pageResponse.get_id());
                                     contentValues.put(com.vandenbussche.emiel.projectsbp.database.Contract.PagesDB.COLUMN_FLAG, Page.Flags.OK);
-
                                     contentResolver.update(updateUri, contentValues, "_id = ?", new String[]{pageLoopItem.get_id()});
+
+                                    getContext().getContentResolver().notifyChange(PAGE_UPLOADED_URI, null, false);
 
                                     syncResult.madeSomeProgress();
                                 }

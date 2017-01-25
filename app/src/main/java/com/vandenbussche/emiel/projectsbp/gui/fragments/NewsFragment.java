@@ -2,9 +2,12 @@ package com.vandenbussche.emiel.projectsbp.gui.fragments;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +18,9 @@ import android.view.ViewGroup;
 import com.vandenbussche.emiel.projectsbp.R;
 import com.vandenbussche.emiel.projectsbp.databinding.FragmentNewsBinding;
 import com.vandenbussche.emiel.projectsbp.viewmodel.NewsFragmentViewModel;
+
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_CHANGED_URI;
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGE_UPLOADED_URI;
 
 
 /**
@@ -28,6 +34,7 @@ public class NewsFragment extends Fragment {
     NewsFragmentViewModel newsFragmentViewModel;
 
     private OnFragmentInteractionListener mListener;
+    private ContentObserver mObserver;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -48,7 +55,7 @@ public class NewsFragment extends Fragment {
         }
         binding.pollsRecyclerView.setItemAnimator(new android.support.v7.widget.DefaultItemAnimator());
         newsFragmentViewModel = new NewsFragmentViewModel(binding);
-        newsFragmentViewModel.loadPolls();
+
         return binding.getRoot();
 
     }
@@ -60,9 +67,31 @@ public class NewsFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onPause(){
+        super.onPause();
+        getContext().getContentResolver().unregisterContentObserver(mObserver);
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        mObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            public void onChange(boolean selfChange)
+            {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        newsFragmentViewModel.loadPolls();
+                    }
+                });
+
+            }
+        };
+        getContext().getContentResolver().registerContentObserver(FOLLOWS_CHANGED_URI, true, mObserver);
+
+
+        newsFragmentViewModel.loadPolls();
     }
 
     @Override

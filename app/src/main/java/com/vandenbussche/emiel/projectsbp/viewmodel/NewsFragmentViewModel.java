@@ -39,6 +39,9 @@ public class NewsFragmentViewModel extends BaseObservable implements Incremental
     }
 
     public void loadPolls() {
+        if(adapter != null){
+            adapter.clearItems();
+        }
         loadPolls(0);
     }
 
@@ -49,7 +52,15 @@ public class NewsFragmentViewModel extends BaseObservable implements Incremental
                 .subscribe(new Action1<List<PollResponse>>() {
                     @Override
                     public void call(List<PollResponse> pollResponses) {
-                        if(pollResponses.size() == 0) return;
+                        if(pollResponses.size() == 0){
+                            if(adapter == null) return;
+
+                            if(adapter.getItemCount() <= 1) {
+                                binding.setDataLoaded(false);
+                                notifyPropertyChanged(BR.dataLoaded);
+                            }
+                            return;
+                        }
                         List<Poll> pollList = new ArrayList<Poll>();
                         for(PollResponse pollResponse : pollResponses){
                             pollList.add(pollResponse.toPoll());

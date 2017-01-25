@@ -19,6 +19,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.FOLLOWS_CHANGED_URI;
+import static com.vandenbussche.emiel.projectsbp.database.provider.Contract.PAGE_UPLOADED_URI;
+
 /**
  * Created by emielPC on 1/12/16.
  */
@@ -58,6 +61,7 @@ public class FollowsCache {
                     public void call(String s) {
                         follow.setFlag(Follow.Flags.OK);
                         updatePollInDatabase(context, follow);
+                        context.getContentResolver().notifyChange(FOLLOWS_CHANGED_URI, null, false);
                     }
                 });
     }
@@ -126,7 +130,7 @@ public class FollowsCache {
                                 .subscribe(new Action1<Long>() {
                                     @Override
                                     public void call(Long aLong) {
-
+                                        context.getContentResolver().notifyChange(FOLLOWS_CHANGED_URI, null, false);
                                     }
                                 });
                     }
